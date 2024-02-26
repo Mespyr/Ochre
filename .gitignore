@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+obj/
+a.out
+ochre

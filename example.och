@@ -1,0 +1,72 @@
+import "std.och"
+
+# generics + types + members
+type Node<T> =
+  next: ^Node<T>
+  data: T
+
+type LinkedList<T> =
+  size: Int
+  head: Node<T>
+
+fn LinkedList.init = 0 @self.size
+
+# generic functions + cast
+fn NULL<T>[^T] = 0 cast(^T)
+fn NULL2<T U>[^T ^U] =
+  0 cast(^T)
+  0 cast(^U)
+
+# conditions
+fn cmp(Int) =
+  case
+    (dup 1 eq?) "one\n"
+    (dup 2 eq?) "two\n"
+  else "idk\n";
+  print pop
+
+# passing functions as arguments
+fn test(Int) [Int] = 12 +
+fn caller( Function(Int)[Int] ) [Int] =
+  12 swp callfn # calling functions on stack
+
+# const values
+const ARRAY_SIZE = 10 2 *
+
+# show declarative syntax
+fn super<T>(T) [^T] =
+  new(T) swp over @T
+
+# Potential use case for function passing:
+#     `fn map<T>(Int ^T Function(T)[Int]) [^T] = ...`
+# could be used like this:
+#     ARRAY_SIZE array pushfn(is_even) map<Int>
+
+fn main =   
+  list: LinkedList<Int> # variables + more generics
+  list.init             # variable members
+  new(Node) delete      # heap allocated data
+
+  func: Function(Int)[Int] # function variables
+  pushfn(test) @func       # pushing functions to stack
+  &func caller dump
+
+  c: Char 'A' @c    # Characters: `Char`
+  1 c 1 1 call3 pop # Syscalls
+
+  arr: Array(Int ARRAY_SIZE) # Arrays (decay to ^Type when pushed to stack)
+  400 0 &arr index-set       # set index of array to value
+  950 1 &arr index-set       # stack: Value, Index, Array(^Int since ptr decay)
+  1 &arr index-at            # Get value at index
+
+  # syntax allows for crazy shit
+  # should stop at five
+  0 while (dup case (dup 2 % 0 eq?) 10 else 5; <)
+    dup dump 1 +
+  end pop
+
+  # when calling generics, you must specify type
+  # no type inferences
+  12 super<Int>
+  dup &Int dump
+  delete
