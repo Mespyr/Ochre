@@ -1,5 +1,9 @@
 import "std.och"
 
+# expressions defining new stack operations
+expr swpovr(a b) = b a b
+expr ovr2(a b) = a b a b
+
 # generics + types + members
 type Node<T> =
   next: ^Node<T>
@@ -8,7 +12,6 @@ type Node<T> =
 type LinkedList<T> =
   size: Int
   head: Node<T>
-
 fn LinkedList.init = 0 @self.size
 
 # generic functions + cast
@@ -35,14 +38,14 @@ const ARRAY_SIZE = 10 2 *
 
 # show declarative syntax
 fn super<T>(T) [^T] =
-  new(T) swp over @T
+  new(T) swpovr @T
 
 # Potential use case for function passing:
-#     `fn map<T>(Int ^T Function(T)[Int]) [^T] = ...`
+#     fn map<T>(Function(T)[Int] Int ^T) [^T] = ...
 # could be used like this:
-#     ARRAY_SIZE array pushfn(is_even) map<Int>
+#     pushfn(is_even) ARRAY_SIZE array map<Int>
 
-fn main =   
+fn main =
   list: LinkedList<Int> # variables + more generics
   list.init             # variable members
   new(Node) delete      # heap allocated data
