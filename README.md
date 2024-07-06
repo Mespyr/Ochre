@@ -1,6 +1,6 @@
 # WARNING
-This is an old repo. Please go to [Ochre](https://github.com/Mespyr/Ochre) for newest rendition.
-This code is for a much different language with a lot of bad programming design choices which is why I've desided to restart.
+
+I have stopped working on this project and am currently working on something new. Check out [Taro](https://github.com/Mespyr/Taro) and [easygc](https://github.com/Mespyr/easygc), which are the new projects I am working on.
 
 # Ochre 
 Ochre is a stack-based programming language with a combination of both high-level and low-level features. It aims to have the simplicity of a Forth-like language, while still possessing the modern features that allow an ease of development.
