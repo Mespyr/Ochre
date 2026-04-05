@@ -1,4 +1,4 @@
-use "std.taro"
+use "std.ri"
 
 fn fib (u64 -> u64) = if (dup 1 >)
   { dec dup fib swp dec fib + }

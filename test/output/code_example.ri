@@ -10,7 +10,7 @@ type vec2 = {
   x: f64
   y: f64
 }
-extern distance (vec2 vec2) f64
+extern distance (vec2 vec2 -> f64)
 
 fn main = {
   "Hello World!" putln
