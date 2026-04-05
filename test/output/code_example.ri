@@ -3,7 +3,7 @@
 extern puts (string)
 extern puti (i64)
 extern putf (f64)
-fn dotnl = { "\n" puts }
+fn dotnl = { "\n:" puts }
 fn putln (string) = { puts dotnl }
 
 type vec2 = {

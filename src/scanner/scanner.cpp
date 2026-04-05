@@ -13,7 +13,9 @@ void Scanner::insert(const std::string& filename) {
     size_t   temp = stream_index;
     uint32_t line_num = 0;
     while (line_num < file->line_count()) {
-        tokenize_line(line_num++, file);
+        uint32_t start_col = find_start_col(file->at(line_num), 0);
+        Location loc(file, line_num++, start_col, start_col);
+        tokenize_line(loc);
         if (error) return;
     }
     stream_index = temp;

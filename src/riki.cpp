@@ -33,7 +33,7 @@ const std::string token_type(Token::Type t) {
     case Token::K_ELSE: return "K_ELSE";
     case Token::K_WHILE: return "K_WHILE";
     case Token::K_CALL: return "K_CALL";
-	case Token::K_UNWRAP: return "K_UNWRAP";
+    case Token::K_UNWRAP: return "K_UNWRAP";
     case Token::K_EXTERN: return "K_EXTERN";
     case Token::K_AS: return "K_AS";
 
@@ -61,12 +61,12 @@ int main(int argc, const char* argv[]) {
 
     while (!scanner.eof()) {
         Token t = scanner.next();
-        std::cout << "(" << t.loc.line_number() + 1 << ")\t" << t.value;
+        std::cout << "(" << t.loc.line_num() + 1 << ")\t" << t.value;
         if (t.loc.end_col() - t.loc.start_col() >= 8)
             std::cout << "\t" << token_type(t.type) << std::endl;
         else
             std::cout << "\t\t" << token_type(t.type) << std::endl;
     }
 
-	return 0;
+    return 0;
 }
