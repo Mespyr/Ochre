@@ -6,8 +6,8 @@
 #include <memory>
 #include <string>
 
-#include "../location/location.hpp"
 #include "../error/error.hpp"
+#include "../location/location.hpp"
 #include "../token.hpp"
 
 class Scanner {

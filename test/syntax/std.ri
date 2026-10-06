@@ -13,7 +13,7 @@ fn sq (u64 -> u64) = { dup * }
 # basic IO
 extern puts (string)
 extern puti (i64)
-fn dotnl = { "\n" puts }
+fn dotnl = { "\n" puts !#
 fn putln (string) =
   { puts dotnl }
 fn putln (i64) =
