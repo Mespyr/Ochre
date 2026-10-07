@@ -1,6 +1,7 @@
 #include <stdio.h>
+#include <unistd.h>
 
-#include "assembly/assembly.h"
+#include "include/argparser.h"
 #include "compiler/compiler.h"
 #include "include/error.h"
 #include "lexer/lexer.h"
@@ -19,13 +20,23 @@ void exec(const char* cmd) {
 }
 
 int main(int argc, const char* argv[]) {
-    if (argc < 2) {
-        print_error("Error: No file provided for compilation");
-        return 1;
-    }
+	ArgParser args(argc, argv);
+
+	if (args.has_error()) {
+		print_error(args.error_message());
+		std::cout << "\n";
+		args.print_help();
+		return 1;
+	}
+
+	if (args.needs_help()) {
+		args.print_help();
+		return 0;
+	}
+
 
     Lexer lexer;
-    lexer.set_file(argv[1]);
+    lexer.set_file(args.input_filename());
     lexer.tokenize();
 
     Parser parser(&lexer);
@@ -38,8 +49,9 @@ int main(int argc, const char* argv[]) {
     Compiler compiler(type_checker.program);
     compiler.generate_asm();
     compiler.perform_optimizations();
-    compiler.write_asm_to_file("/tmp/out.asm");
-    exec("fasm /tmp/out.asm ./a.out");
+    compiler.write_asm_to_file(args.asm_filename());
 
-    return 0;
+	const std::string& compile_command = "fasm " + args.asm_filename() + " " + args.output_filename();
+    exec(compile_command.c_str());
+	return 0;
 }
