@@ -1,45 +1,52 @@
 # Ochre
-Ochre (pronounced Oak-er) is a simple semi-low level stack programming language with a simple principle: all manipulation STAYS ON THE STACK.
-It draws inspiration from features in Assembly, almost 'modernizing' them for use in a pure stack-based environment.
 
-### Special Features (if you weren't interested already):
-- Tighter control flow using labels and conditional jump statements
-- Manipulation directly on the stack; nothing is abstracted away with syntactical sugar
-- Variables to control more important instances while still keeping EVERYTHING on the stack.
-- Complex data types
-- Heap allocated complex struct instances which can get passed around on the stack.
-- Lots of freedom for naming stuff (my favorite)
-- Strict type-checking
+**Ochre** (pronounced *Oak-er*) is a simple, semi-low-level stack programming language built on a single core principle: **all manipulation stays on the stack.**
 
-## Quick Start 
+It draws inspiration from Assembly, modernizing its features for use in a pure stack-based environment without abstracting away the details with syntactic sugar.
+
+## Features
+
+*   **Stack-Centric:** All manipulation happens directly on the stack.
+*   **Variables:** Control important instances while maintaining the stack-based architecture.
+*   **Precise Control Flow:** Tighter control flow utilizing labels and conditional jump statements.
+*   **Complex Types:** Support for complex data types backed by strict type-checking.
+*   **Heap Allocation:** Create heap-allocated complex struct instances that can be passed around on the stack.
+*   **Naming Freedom:** Extensive flexibility for naming conventions.
+
+## Quick Start
 
 ### Prerequisites
-- Linux!
-- A C++ compiler (currently configured for Clang++)
-- [GNU Make](https://www.gnu.org/software/make/)
-- The [Flat Assembler 1](https://flatassembler.net/)
+
+Ensure you have the following installed on your Linux system:
+*   A C++ compiler (configured for `clang++` by default)
+*   [GNU Make](https://www.gnu.org/software/make/)
+*   [Flat Assembler 1 (FASM)](https://flatassembler.net/)
 
 ### Installation
-After installing dependancies, one command will get the compiler on your PATH:
+
+Once dependencies are met, install Ochre to your PATH with a single command:
 
 ```bash
 sudo make install
 ```
 
-You should be able to run `ochre` anywhere now!
+You can now run `ochre` from anywhere on your system.
 
 ### Testing
-To make sure `ochre` is working normally, you can also run the test runner suite:
+
+Verify your installation by running the built-in test suite:
+
 ```bash
 make test
 ```
 
 ## Usage
+
 ```bash
 Usage: ochre [options] <input_file>
 
 Options:
-	-h, --help	Display this information
-	-o <file>	Place the output into <file> (default: a.out)
-	--asm <file>	Output assembly code to <file> (default: /tmp/out.asm)
+    -h, --help    Display this information
+    -o <file>     Place the output into <file> (default: a.out)
+    --asm <file>  Output assembly code to <file> (default: /tmp/out.asm)
 ```
