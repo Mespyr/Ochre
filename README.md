@@ -3,13 +3,12 @@
 
   # Ochre
 
-  <p>
-    <b>A simple, semi-low-level stack programming language</b>
-  </p>
 </div>
+<br>
 
 **Ochre** (pronounced *Oak-er*) is a simple, semi-low-level stack programming language built on a single core principle: **all manipulation stays on the stack.**
-It draws inspiration from Assembly, modernizing its features for use in a pure stack-based environment without abstracting away the details with syntactic sugar.
+It draws inspiration from Assembly, modernizing and pruning its features for use in a pure stack-based environment.
+
 
 ## Features
 
