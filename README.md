@@ -1,6 +1,20 @@
-# Ochre
+<div align="center">
 
-**Ochre** (pronounced *Oak-er*) is a simple, semi-low-level stack programming language built on a single core principle: **all manipulation stays on the stack.**
+  <img src="logo.png" alt="Ochre Logo" width="160">
+
+  # Ochre
+
+  <p>
+    <b>A simple, semi-low-level stack programming language</b>
+  </p>
+
+  <p>
+    Pronounced <i>Oak-er</i> • All manipulation stays on the stack
+  </p>
+
+</div>
+
+**Ochre** is a simple, semi-low-level stack programming language built on a single core principle: **all manipulation stays on the stack.**
 
 It draws inspiration from Assembly, modernizing its features for use in a pure stack-based environment without abstracting away the details with syntactic sugar.
 
@@ -10,7 +24,7 @@ It draws inspiration from Assembly, modernizing its features for use in a pure s
 *   **Variables:** Control important instances while maintaining the stack-based architecture.
 *   **Precise Control Flow:** Tighter control flow utilizing labels and conditional jump statements.
 *   **Complex Types:** Support for complex data types backed by strict type-checking.
-*   **Heap Allocation:** Create heap-allocated complex struct instances that can be passed around on the stack.
+*   **Heap Allocation:** Create heap-allocated struct instances that can be passed around on the stack.
 *   **Naming Freedom:** Extensive flexibility for naming conventions.
 
 ## Quick Start
