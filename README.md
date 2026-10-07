@@ -20,7 +20,7 @@ It draws inspiration from features in Assembly, almost 'modernizing' them for us
 - The [Flat Assembler 1](https://flatassembler.net/)
 
 ### Quick Start (One-Command Setup)
-After installing dependancies, one command will get the compiler on your PATH.
+After installing dependancies, one command will get the compiler on your PATH:
 
 ```bash
 sudo make install
@@ -29,7 +29,9 @@ sudo make install
 You should be able to run `ochre` anywhere now!
 
 ### Testing
-To make sure `ochre` is working normally, you can also run the test runner suite.
+To make sure `ochre` is working normally, you can also run the test runner suite:
 ```bash
 make test
 ```
+
+## stuff
