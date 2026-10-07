@@ -11,7 +11,7 @@ It draws inspiration from features in Assembly, almost 'modernizing' them for us
 - Lots of freedom for naming stuff (my favorite)
 - Strict type-checking
 
-## Installation
+## Quick Start 
 
 ### Prerequisites
 - Linux!
@@ -19,7 +19,7 @@ It draws inspiration from features in Assembly, almost 'modernizing' them for us
 - [GNU Make](https://www.gnu.org/software/make/)
 - The [Flat Assembler 1](https://flatassembler.net/)
 
-### Quick Start (One-Command Setup)
+### Installation
 After installing dependancies, one command will get the compiler on your PATH:
 
 ```bash
@@ -34,4 +34,12 @@ To make sure `ochre` is working normally, you can also run the test runner suite
 make test
 ```
 
-## stuff
+## Usage
+```bash
+Usage: ochre [options] <input_file>
+
+Options:
+	-h, --help	Display this information
+	-o <file>	Place the output into <file> (default: a.out)
+	--asm <file>	Output assembly code to <file> (default: /tmp/out.asm)
+```
