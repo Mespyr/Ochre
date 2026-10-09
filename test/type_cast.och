@@ -1,0 +1,6 @@
+fun main()
+  Char c
+  65 cast:Char @c
+  1 c 1 1 call3 pop
+  10 cast:Char @c
+  1 c 1 1 call3 pop
