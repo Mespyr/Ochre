@@ -1,0 +1,29 @@
+struct Memory 
+  Int data_raw
+
+fun alloc(Int) [^Memory]
+  Int size @size
+  0 -1 33 3 &size 0 9 call6
+  cast:^Memory
+
+fun add_and_inc(^Char Int) [^Char]
+  cast:Char over @Char cast:Int 1 + cast:^Char
+
+fun print(Int ^Char) 1 1 call3 pop
+
+fun main()
+  256 alloc cast:^Char
+
+  dup ^Char chars @chars
+
+  65 loop:
+    swp over add_and_inc
+	swp 1 +
+	dup 91 = cjmpet loop
+	jmp loop
+  end pop pop
+
+  26 &chars print
+  &chars delete
+
+  "\n" print

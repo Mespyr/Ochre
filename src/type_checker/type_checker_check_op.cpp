@@ -383,6 +383,16 @@ void TypeChecker::check_op() {
         program.functions.at(func_name).ops.at(idx) = op;
     } break;
 
+    case OP_TYPE_CAST: {
+        if (type_stack.size() < 1) {
+            print_not_enough_arguments_error(op.loc, 1, 0,
+                                             "cast:", "type cast");
+            exit(1);
+        }
+        type_stack.pop_back();
+        type_stack.push_back(LangType(op.loc, op.str_operand));
+    } break;
+
     case OP_FUNCTION_CALL: {
         assert(program.functions.count(op.str_operand));
 

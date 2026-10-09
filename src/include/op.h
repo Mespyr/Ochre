@@ -82,6 +82,7 @@ enum OpType {
 	OP_PUSH_STR,
 	OP_PUSH_TYPE_INSTANCE,
 	OP_DELETE_PTR,
+	OP_TYPE_CAST,
 	OP_FUNCTION_CALL,
 	// count | must always be last
 	OP_COUNT

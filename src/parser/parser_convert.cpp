@@ -2,7 +2,7 @@
 
 Op Parser::convert_token_to_op(
     Token tok, std::map<std::string, std::pair<LangType, int>> var_offsets) {
-    static_assert(OP_COUNT == 57,
+    static_assert(OP_COUNT == 58,
                   "unhandled op types in Parser::convert_token_to_op()");
 
     if (tok.type == TOKEN_WORD) {
@@ -91,8 +91,8 @@ Op Parser::convert_token_to_op(
                 is_prim_type(push_struct_name)) {
                 return Op(tok.loc, OP_PUSH_TYPE_INSTANCE, 1, push_struct_name);
             }
-            // no chance to be an array
             uint64_t colon_pos = push_struct_name.find(':');
+            // no chance to be an array
             if (colon_pos == std::string::npos) {
                 print_error_at_loc(
                     tok.loc, "unknown type in 'push type instance' (<...>), '" +
@@ -131,6 +131,26 @@ Op Parser::convert_token_to_op(
         // OP_DELETE_PTR
         else if (tok.value == "delete")
             return Op(tok.loc, OP_DELETE_PTR);
+        // OP_TYPE_CAST
+        else if (tok.value.compare(0, 5, "cast:") == 0) {
+            std::string                 full_type_str = tok.value.substr(5);
+            std::pair<std::string, int> type = parse_type_str(full_type_str);
+            // if the type is a struct and not a pointer
+            if (program.structs.count(type.first) && type.second == 0) {
+                print_error_at_loc(tok.loc,
+                                   "cannot cast type to a non-pointer struct "
+                                   "since those cannot exist on the stack");
+                exit(1);
+
+            } else if (is_prim_type(type.first) ||
+                       program.structs.count(type.first))
+                // if the struct is a primitive type or a struct pointer
+                return Op(tok.loc, OP_TYPE_CAST, full_type_str);
+            else {
+                print_error_at_loc(tok.loc, "invalid type cast");
+                exit(1);
+            }
+        }
         // OP_FUNCTION_CALL
         else if (program.functions.count(tok.value))
             return Op(tok.loc, OP_FUNCTION_CALL, tok.value);

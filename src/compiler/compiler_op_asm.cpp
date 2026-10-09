@@ -359,6 +359,8 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
         asmp.new_inst(asmp.inst_syscall());
     } break;
 
+    case OP_TYPE_CAST: break;  // nothing needed to do!
+
     case OP_FUNCTION_CALL: {
         asmp.new_inst(
             asmp.inst_mov(Argument(REGISTER_RAX), Argument(REGISTER_RSP)));

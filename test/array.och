@@ -1,8 +1,10 @@
-fun print(Int ^Char) 1 1 call3 pop
-
-fun read() [^Char]
-  256 Int len @len
-  <Char:256> dup &len swp 0 0 call3 pop
+struct test_struct
+  Int x Int y
 
 fun main()
-  "Write: " print read delete
+  <Char:10> delete
+  <^Char:10> delete
+  <^Int:10> delete
+  <^^Int:10> delete
+  <test_struct:10> delete
+  <^test_struct:10> delete
