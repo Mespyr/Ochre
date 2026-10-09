@@ -27,7 +27,7 @@ private:
 	int function_addr = 0;
 	std::vector<std::string> include_paths;
 
-	bool is_legal_name(Token token_name);
+	bool is_legal_name(Token token_name, bool is_function_name = false);
 	std::string add_escapes_to_string(std::string str);
 	int64_t eval_const_expression(Location definition_loc);
 

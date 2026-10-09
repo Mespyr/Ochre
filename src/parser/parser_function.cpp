@@ -14,7 +14,7 @@ void Parser::parse_function(Op current_op) {
     Token       name_token = tokens.at(i);
     std::string function_name = name_token.value;
 
-    if (!is_legal_name(name_token)) {
+    if (!is_legal_name(name_token, true)) {
         print_error_at_loc(name_token.loc, "illegal name for function");
         exit(1);
     } else if (program.functions.count(function_name)) {

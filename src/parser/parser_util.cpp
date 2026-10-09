@@ -3,7 +3,7 @@
 
 #include "parser.h"
 
-bool Parser::is_legal_name(Token token_name) {
+bool Parser::is_legal_name(Token token_name, bool is_function_name) {
     // if token is an integer or string
     if (token_name.type == TOKEN_INT || token_name.type == TOKEN_STRING)
         return false;
@@ -12,7 +12,9 @@ bool Parser::is_legal_name(Token token_name) {
     if (token_name.value.find('^') != std::string::npos) return false;
     if (token_name.value.find('@') != std::string::npos) return false;
     if (token_name.value.find('&') != std::string::npos) return false;
-    if (token_name.value.find('.') != std::string::npos) return false;
+	// functions are allowed extra names cuz they don't infringe on other syntax 
+	if (!is_function_name)
+		if (token_name.value.find('.') != std::string::npos) return false;
     if (token_name.value.front() == '<' || token_name.value.back() == '>')
         return false;
     // if token is builtin word or type name
