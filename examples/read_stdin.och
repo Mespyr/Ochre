@@ -1,0 +1,22 @@
+fun print(Int ^Char) 1 1 call3 pop
+
+struct String
+  Int size ^Char data
+
+fun String.print(^String) [^String]
+  dup dup &String.size swp &String.data print 
+
+# fixed length for now, will change once I add type casting
+fun read() [^String]
+  16 Int len @len # hardcode length
+  <Char:16> dup &len swp 0 0 call3 pop
+  <String> ^String s @s
+  &len &s @String.size
+  &s @String.data &s
+
+fun main()
+  "Type something: " print
+  read
+  "You typed: " print
+  String.print delete
+  "\n" print

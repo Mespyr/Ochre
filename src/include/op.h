@@ -106,6 +106,14 @@ public:
 		str_operand(str_operand)
 	{}
 
+	Op(Location loc, OpType type, int64_t int_operand, std::string str_operand) :
+		loc(loc),
+		type(type),
+		int_operand(int_operand),
+		str_operand(str_operand)
+	{}
+
+
 	bool is_prim_type_mode();
 
 	Location loc;

@@ -354,7 +354,8 @@ void Parser::parse_func_body(Function* func) {
         } break;
 
         case OP_PUSH_TYPE_INSTANCE: {
-            f_op.int_operand = sizeof_type(f_op.str_operand, program.structs);
+            f_op.int_operand = sizeof_type(f_op.str_operand, program.structs) *
+                               f_op.int_operand;
             func->ops.push_back(f_op);
         } break;
 

@@ -87,14 +87,46 @@ Op Parser::convert_token_to_op(
         else if (tok.value.front() == '<' && tok.value.back() == '>') {
             std::string push_struct_name =
                 parse_type_str(tok.value.substr(1, tok.value.size() - 2)).first;
-            if (!program.structs.count(push_struct_name) &&
-                !is_prim_type(push_struct_name)) {
+            if (program.structs.count(push_struct_name) ||
+                is_prim_type(push_struct_name)) {
+                return Op(tok.loc, OP_PUSH_TYPE_INSTANCE, 1, push_struct_name);
+            }
+            // no chance to be an array
+            uint64_t colon_pos = push_struct_name.find(':');
+            if (colon_pos == std::string::npos) {
                 print_error_at_loc(
                     tok.loc, "unknown type in 'push type instance' (<...>), '" +
                                  push_struct_name + "'");
                 exit(1);
             }
-            return Op(tok.loc, OP_PUSH_TYPE_INSTANCE, push_struct_name);
+
+            // we know there is a colon somewhere, might be an array
+            std::string new_push_struct_name =
+                push_struct_name.substr(0, colon_pos);
+            std::string amount = push_struct_name.substr(colon_pos + 1);
+            if (!program.structs.count(new_push_struct_name) &&
+                !is_prim_type(new_push_struct_name)) {
+                print_error_at_loc(
+                    tok.loc, "unknown type in 'push type instance' (<...>), '" +
+                                 new_push_struct_name + "'");
+                exit(1);
+            }
+            // if the value is a constant
+            if (program.consts.count(amount))
+                return Op(tok.loc, OP_PUSH_TYPE_INSTANCE,
+                          program.consts.at(amount).value,
+                          new_push_struct_name);
+            // if the value is a number
+            if (lexer->is_number(amount)) {
+                return Op(tok.loc, OP_PUSH_TYPE_INSTANCE, atol(amount.c_str()),
+                          new_push_struct_name);
+            }
+            print_error_at_loc(tok.loc,
+                               "expected size (integer) in 'push type "
+                               "instance' (<...>), got '" +
+                                   amount + "'");
+            exit(1);
+
         }
         // OP_DELETE_PTR
         else if (tok.value == "delete")
