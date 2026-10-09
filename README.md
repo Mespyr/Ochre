@@ -9,7 +9,6 @@
 **Ochre** (pronounced *Oak-er*) is a simple, semi-low-level stack programming language built on a single core principle: **all manipulation stays on the stack.**
 It draws inspiration from Assembly, modernizing and pruning its features for use in a pure stack-based environment.
 
-
 ## Features
 
 *   **Stack-Centric:** All manipulation happens directly on the stack.
@@ -18,11 +17,6 @@ It draws inspiration from Assembly, modernizing and pruning its features for use
 *   **Complex Types:** Support for complex data types backed by strict type-checking.
 *   **Heap Allocation:** Create heap-allocated struct instances that can be passed around on the stack.
 *   **Naming Freedom:** Extensive flexibility for naming conventions.
-
-## Versions
-
-- **002**: Added fixed arrays and type casting.
-- **001** *(or 1.0.0)*: Basic version of Ochre: type-checking and compiler optimizations.
 
 ## Quick Start
 
@@ -61,4 +55,3 @@ Options:
     -o <file>     Place the output into <file> (default: a.out)
     --asm <file>  Output assembly code to <file> (default: /tmp/out.asm)
 ```
-
