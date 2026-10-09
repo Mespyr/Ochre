@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
-#include "include/argparser.h"
 #include "compiler/compiler.h"
+#include "include/argparser.h"
 #include "include/error.h"
 #include "lexer/lexer.h"
 #include "parser/parser.h"
@@ -20,20 +20,19 @@ void exec(const char* cmd) {
 }
 
 int main(int argc, const char* argv[]) {
-	ArgParser args(argc, argv);
+    ArgParser args(argc, argv);
 
-	if (args.has_error()) {
-		print_error(args.error_message());
-		std::cout << "\n";
-		args.print_help();
-		return 1;
-	}
+    if (args.has_error()) {
+        print_error(args.error_message());
+        std::cout << "\n";
+        args.print_help();
+        return 1;
+    }
 
-	if (args.needs_help()) {
-		args.print_help();
-		return 0;
-	}
-
+    if (args.needs_help()) {
+        args.print_help();
+        return 0;
+    }
 
     Lexer lexer;
     lexer.set_file(args.input_filename());
@@ -51,7 +50,8 @@ int main(int argc, const char* argv[]) {
     compiler.perform_optimizations();
     compiler.write_asm_to_file(args.asm_filename());
 
-	const std::string& compile_command = "fasm " + args.asm_filename() + " " + args.output_filename();
+    const std::string& compile_command =
+        "fasm " + args.asm_filename() + " " + args.output_filename();
     exec(compile_command.c_str());
-	return 0;
+    return 0;
 }

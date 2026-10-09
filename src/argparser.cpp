@@ -35,21 +35,22 @@ ArgParser::ArgParser(int argc, const char* argv[]) {
         }
     }
 
-	// no input file found :(
-	if (input_file.empty() && !help) {
-		error_msg = "no input file specified.";
-		error = true;
-	}
+    // no input file found :(
+    if (input_file.empty() && !help) {
+        error_msg = "no input file specified.";
+        error = true;
+    }
 }
 
 void ArgParser::print_help() {
-    std::cout
-		<< "Ochre Version 1.0.0\n"
-        << "Usage: " << program_name << " [options] <input_file>\n\n"
-        << "Options:\n"
-        << "\t-h, --help\tDisplay this information\n"
-        << "\t-o <file>\tPlace the output into <file> (default: a.out)\n"
-        << "\t--asm <file>\tOutput assembly code to <file> (default: /tmp/out.asm)" << std::endl;
+    std::cout << "Ochre Version 1.0.0\n"
+              << "Usage: " << program_name << " [options] <input_file>\n\n"
+              << "Options:\n"
+              << "\t-h, --help\tDisplay this information\n"
+              << "\t-o <file>\tPlace the output into <file> (default: a.out)\n"
+              << "\t--asm <file>\tOutput assembly code to <file> (default: "
+                 "/tmp/out.asm)"
+              << std::endl;
 }
 
 // getters

@@ -6,10 +6,10 @@ struct LinkedList
   Node head
   Int size
 
-fun LinkedList::init(^LinkedList)
+fun LinkedList.init(^LinkedList)
   0 swp @LinkedList.size
 
-fun LinkedList::append(Int ^LinkedList)
+fun LinkedList.append(Int ^LinkedList)
   ^LinkedList LL @LL
   Int value @value
   &LL &LinkedList.size 0 = cjmpf append 
@@ -31,7 +31,7 @@ fun LinkedList::append(Int ^LinkedList)
 
   &LL &LinkedList.size 1 + &LL @LinkedList.size
 
-fun LinkedList::print(^LinkedList)
+fun LinkedList.print(^LinkedList)
   LinkedList LL @LL
   &LL.head 0 loop:
     dup &LL.size = cjmpet loop
@@ -41,7 +41,7 @@ fun LinkedList::print(^LinkedList)
     jmp loop
   end pop pop
 
-fun LinkedList::pop(^LinkedList)
+fun LinkedList.pop(^LinkedList)
   ^LinkedList LL @LL
   &LL &LinkedList.head
   0 loop:
@@ -53,7 +53,7 @@ fun LinkedList::pop(^LinkedList)
   delete
   &LL &LinkedList.size 1 - &LL @LinkedList.size
 
-fun LinkedList::clear(^LinkedList)
+fun LinkedList.clear(^LinkedList)
   ^LinkedList LL @LL
   &LL &LinkedList.head &Node.next
 
@@ -71,24 +71,24 @@ fun print(Int ^Char)
 
 fun main()
   LinkedList LL
-  LL LinkedList::init
+  LL LinkedList.init
 
-  12 LL LinkedList::append
-  13 LL LinkedList::append
-  14 LL LinkedList::append
-  15 LL LinkedList::append
-  16 LL LinkedList::append
+  12 LL LinkedList.append
+  13 LL LinkedList.append
+  14 LL LinkedList.append
+  15 LL LinkedList.append
+  16 LL LinkedList.append
 
   "First Linked List Iteration:\n" print
-  LL LinkedList::print
+  LL LinkedList.print
 
-  LL LinkedList::pop
-  LL LinkedList::pop
+  LL LinkedList.pop
+  LL LinkedList.pop
 
   "Linked List Iteration After Popping:\n" print
-  LL LinkedList::print
+  LL LinkedList.print
 
-  LL LinkedList::clear
+  LL LinkedList.clear
 
   "Size of Linked List After Clearing\n" print
   &LL.size dump

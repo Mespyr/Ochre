@@ -9,12 +9,13 @@ bool Parser::is_legal_name(Token token_name, bool is_function_name) {
         return false;
     // any illegal characters in names
     if (token_name.value.find('"') != std::string::npos) return false;
+    if (token_name.value.find(':') != std::string::npos) return false;
     if (token_name.value.find('^') != std::string::npos) return false;
     if (token_name.value.find('@') != std::string::npos) return false;
     if (token_name.value.find('&') != std::string::npos) return false;
-	// functions are allowed extra names cuz they don't infringe on other syntax 
-	if (!is_function_name)
-		if (token_name.value.find('.') != std::string::npos) return false;
+    // functions are allowed extra names cuz they don't infringe on other syntax
+    if (!is_function_name)
+        if (token_name.value.find('.') != std::string::npos) return false;
     if (token_name.value.front() == '<' || token_name.value.back() == '>')
         return false;
     // if token is builtin word or type name
