@@ -43,7 +43,7 @@ ArgParser::ArgParser(int argc, const char* argv[]) {
 }
 
 void ArgParser::print_help() {
-    std::cout << "Ochre Version 1.0.0\n"
+    std::cout << "Ochre Version 002\n"
               << "Usage: " << program_name << " [options] <input_file>\n\n"
               << "Options:\n"
               << "\t-h, --help\tDisplay this information\n"
