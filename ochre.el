@@ -9,9 +9,9 @@
 (defconst ochre-keywords
   '("fun" "struct" "const" "end" "import" ))
 
-(defconst ochre-funcs '("delete" "call0" "call1" "call2" "call3" "call4" "call5" "call6" "dump"))
+(defconst ochre-funcs '("cast" "delete" "call0" "call1" "call2" "call3" "call4" "call5" "call6" "dump"))
 
-(defconst ochre-builtin '("cast" "jmp" "cjmpt" "cjmpf" "jmpe"  "cjmpet" "cjmpef"))
+(defconst ochre-builtin '("jmp" "cjmpt" "cjmpf" "jmpe"  "cjmpet" "cjmpef"))
 
 (defconst ochre-types
   '("Int" "Char"))
@@ -19,7 +19,7 @@
 (defconst ochre-highlights `(
   ("#.*" . font-lock-comment-face)
   ("-?\\<-?[0-9]+\\(\\.[0-9]+\\)?\\>"     . font-lock-constant-face)
-  ("\\_<&\\S-+"                           . font-lock-variable-name-face) ;; "&\\S-+"
+  ("\\_<&\\S-+"                           . font-lock-variable-name-face)
   ("\\(?:^\\|\\s-\\)@\\S-+"               . font-lock-variable-name-face)
   (,(regexp-opt ochre-keywords 'symbols)  . font-lock-keyword-face)
   (,(regexp-opt ochre-funcs 'symbols)     . font-lock-function-name-face)
