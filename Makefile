@@ -1,9 +1,10 @@
 # config
+VERSION=0.1.0
 CPP=clang++
 PREFIX = /usr/local
 BINDIR = $(PREFIX)/bin
 
-CPPFLAGS=-Wall -Wextra -pedantic
+CPPFLAGS=-DOCHRE_VERSION=\"$(VERSION)\" -Wall -Wextra -pedantic
 LDFLAGS=
 
 SRC_DIRS=src src/lexer src/parser src/type_checker src/compiler src/assembly src/include

@@ -1,5 +1,9 @@
 #include "include/argparser.h"
 
+#ifndef OCHRE_VERSION
+#define OCHRE_VERSION "ADD THIS!!!"
+#endif
+
 ArgParser::ArgParser(int argc, const char* argv[]) {
     program_name = argv[0];
     for (int i = 1; i < argc; ++i) {
@@ -43,7 +47,7 @@ ArgParser::ArgParser(int argc, const char* argv[]) {
 }
 
 void ArgParser::print_help() {
-    std::cout << "Ochre Version 2.0.0\n"
+    std::cout << "Ochre Version " << OCHRE_VERSION << "\n"
               << "Usage: " << program_name << " [options] <input_file>\n\n"
               << "Options:\n"
               << "\t-h, --help\tDisplay this information\n"
