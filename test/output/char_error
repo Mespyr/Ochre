@@ -1,0 +1,7 @@
+COMPILE: 1
+STDOUT:
+
+STDERR:
+┌[test/char_error.och:2:2]
+│   '++' dump
+└   ^^ unexpected character found while tokenizing char

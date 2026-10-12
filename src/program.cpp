@@ -155,7 +155,8 @@ std::string prim_type_name(LangPrimType type) {
     case TYPE_INT: return "Int"; break;
     case TYPE_CHAR: return "Char"; break;
     case PRIM_TYPES_COUNT:
-        print_error("DONT PASS PRIM_TYPES_COUNT INTO prim_type_name(LangPrimType)");
+        print_error(
+            "DONT PASS PRIM_TYPES_COUNT INTO prim_type_name(LangPrimType)");
         exit(1);
     }
     exit(1);
@@ -165,7 +166,8 @@ int sizeof_type(LangType type, std::map<std::string, Struct> structs) {
     if (is_pointer(type)) return 8;
     if (is_prim_type(type)) {
         static_assert(PRIM_TYPES_COUNT == 2,
-                      "unhandled prim types in sizeof_type(LangType type, std::map<std::string, Struct> structs)");
+                      "unhandled prim types in sizeof_type(LangType type, "
+                      "std::map<std::string, Struct> structs)");
 
         if (type.base_type == prim_type_name(TYPE_CHAR)) return 1;
         if (type.base_type == prim_type_name(TYPE_INT)) return 8;
@@ -179,7 +181,8 @@ int sizeof_type(std::string type, std::map<std::string, Struct> structs) {
     if (t.second > 0) return 8;
     if (is_prim_type(t.first)) {
         static_assert(PRIM_TYPES_COUNT == 2,
-                      "unhandled prim types in sizeof_type(std::string type, std::map<std::string, Struct> structs)");
+                      "unhandled prim types in sizeof_type(std::string type, "
+                      "std::map<std::string, Struct> structs)");
 
         if (t.first == prim_type_name(TYPE_CHAR)) return 1;
         if (t.first == prim_type_name(TYPE_INT)) return 8;

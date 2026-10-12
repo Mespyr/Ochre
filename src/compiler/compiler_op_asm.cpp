@@ -329,6 +329,12 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RAX)));
     } break;
 
+    case OP_PUSH_CHAR: {
+        asmp.new_inst(
+            asmp.inst_mov(Argument(REGISTER_RAX), Argument(op.int_operand)));
+        asmp.new_inst(asmp.inst_push(Argument(REGISTER_RAX)));
+    } break;
+
     case OP_PUSH_STR: {
         asmp.string_data.push_back(op.str_operand);
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX),

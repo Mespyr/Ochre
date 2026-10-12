@@ -15,7 +15,7 @@ void Lexer::tokenize_line() {
             column_number_end = find_string_end_col(column_number_start);
 
             // check if col_end is at end of line
-            if (column_number_end == line.length()) {
+            if (column_number_end >= line.length()) {
                 print_error_at_loc(Location(line_number, column_number_start,
                                             column_number_end, line, filename),
                                    "unexpected EOL while tokenizing string");
@@ -30,6 +30,47 @@ void Lexer::tokenize_line() {
                       TOKEN_STRING,
                       Location(line_number, column_number_start,
                                column_number_end, line, filename)));
+
+        }
+        // if token is a char
+        else if (line.at(column_number_start) == '\'') {
+            // if "'" is at the end of line
+            if (column_number_start + 1 >= line.length()) {
+                print_error_at_loc(
+                    Location(line_number, column_number_start,
+                             column_number_start + 1, line, filename),
+                    "unexpected EOL while tokenizing char");
+                exit(1);
+            }
+            // if the character is an escape sequence
+            if (line.at(column_number_start + 1) == '\\')
+                column_number_end = column_number_start + 3;
+            else
+                column_number_end = column_number_start + 2;
+            // if the end column is greater than the line length
+            if (column_number_end >= line.length()) {
+                print_error_at_loc(Location(line_number, column_number_start,
+                                            column_number_end, line, filename),
+                                   "unexpected EOL while tokenizing char");
+                exit(1);
+            }
+            // if it isn't closed with a "'"
+            if (line.at(column_number_end) != '\'') {
+                print_error_at_loc(
+                    Location(line_number, column_number_start,
+                             column_number_end, line, filename),
+                    "unexpected character found while tokenizing char");
+                exit(1);
+            }
+            // point the end after "'"
+            column_number_end++;
+            tokens.push_back(
+                Token(line.substr(column_number_start,
+                                  column_number_end - column_number_start),
+                      TOKEN_CHAR,
+                      Location(line_number, column_number_start,
+                               column_number_end, line, filename)));
+
         }
         // if token is any of these chars ()[]
         else if (line.at(column_number_start) == '(' ||

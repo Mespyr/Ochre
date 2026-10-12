@@ -1,0 +1,6 @@
+fun main()
+  'A' dump
+  'B' dump
+  '\n' dump
+  '\\' dump
+  '\'' dump

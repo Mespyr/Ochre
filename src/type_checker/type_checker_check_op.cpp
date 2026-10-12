@@ -355,10 +355,15 @@ void TypeChecker::check_op() {
         type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
         break;
 
+    case OP_PUSH_CHAR:
+        type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_CHAR), 0));
+        break;
+
     case OP_PUSH_STR:
         type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
-        type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_CHAR),
-                                      1));  // pointer to array of ints (string)
+        type_stack.push_back(
+            LangType(op.loc, prim_type_name(TYPE_CHAR),
+                     1));  // pointer to array of chars (string)
         break;
 
     case OP_PUSH_TYPE_INSTANCE: {

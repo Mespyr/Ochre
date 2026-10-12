@@ -25,6 +25,31 @@ bool Parser::is_legal_name(Token token_name, bool is_function_name) {
     return true;
 }
 
+std::string Parser::parse_single_escape_sequence(std::string esc) {
+    if (esc == "\\a")
+        return "\a";
+    else if (esc == "\\b")
+        return "\b";
+    else if (esc == "\\f")
+        return "\f";
+    else if (esc == "\\n")
+        return "\n";
+    else if (esc == "\\r")
+        return "\r";
+    else if (esc == "\\t")
+        return "\t";
+    else if (esc == "\\v")
+        return "\v";
+    else if (esc == "\\\\")
+        return "\\";
+    else if (esc == "\\'")
+        return "\'";
+    else if (esc == "\\\"")
+        return "\"";
+    else if (esc == "\\0")
+        return "\0";
+    return "";
+}
 std::string Parser::add_escapes_to_string(std::string str) {
     std::string buf;
     std::string ret;
@@ -35,40 +60,14 @@ std::string Parser::add_escapes_to_string(std::string str) {
 
     while (i < str.length()) {
         buf = str.substr(i, 2);
-
-        if (buf == "\\a")
-            ret.push_back('\a');
-        else if (buf == "\\b")
-            ret.push_back('\b');
-        else if (buf == "\\f")
-            ret.push_back('\f');
-        else if (buf == "\\n")
-            ret.push_back('\n');
-        else if (buf == "\\r")
-            ret.push_back('\r');
-        else if (buf == "\\t")
-            ret.push_back('\t');
-        else if (buf == "\\v")
-            ret.push_back('\v');
-        else if (buf == "\\\\")
-            ret.push_back('\\');
-        else if (buf == "\\'")
-            ret.push_back('\'');
-        else if (buf == "\\\"")
-            ret.push_back('\"');
-        else if (buf == "\\\?")
-            ret.push_back('\?');
-        else if (buf == "\\0")
-            ret.push_back('\0');
-        else {
-            // if escape sequence not found, shift buffer over by one char to
-            // next section
+        std::string parsed_esc_sequence = parse_single_escape_sequence(buf);
+        if (!parsed_esc_sequence.empty()) {
+            ret.push_back(parsed_esc_sequence.at(0));
+            i += 2;
+        } else {
             ret.push_back(buf.at(0));
             i++;
-            continue;
         }
-        // skip both chars if escape sequence found in buffer
-        i += 2;
     }
     return ret;
 }

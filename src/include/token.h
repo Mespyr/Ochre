@@ -6,6 +6,7 @@
 enum TokenType {
 	TOKEN_WORD,
 	TOKEN_INT,
+	TOKEN_CHAR,
 	TOKEN_STRING,
 	TOKEN_TYPE_COUNT
 };

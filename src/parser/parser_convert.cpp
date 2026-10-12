@@ -2,7 +2,7 @@
 
 Op Parser::convert_token_to_op(
     Token tok, std::map<std::string, std::pair<LangType, int>> var_offsets) {
-    static_assert(OP_COUNT == 58,
+    static_assert(OP_COUNT == 59,
                   "unhandled op types in Parser::convert_token_to_op()");
 
     if (tok.type == TOKEN_WORD) {
@@ -201,7 +201,27 @@ Op Parser::convert_token_to_op(
         }
     } else if (tok.type == TOKEN_INT)
         return Op(tok.loc, OP_PUSH_INT, atol(tok.value.c_str()));
-    else if (tok.type == TOKEN_STRING)
+    else if (tok.type == TOKEN_CHAR) {
+        // escape sequence char token (since a length of 3 is one char + 2 "'"s
+        std::string val = tok.value.substr(1, tok.value.length() - 2);
+        if (tok.value.length() > 3) {
+            std::string raw = parse_single_escape_sequence(val);
+            if (raw.empty()) {
+                print_error_at_loc(tok.loc, "unexpected '" + tok.value +
+                                                "' char found while parsing");
+                exit(1);
+            }
+            val = raw;
+        }
+        // this should only be one character
+        if (val.length() != 1) {
+            print_error_at_loc(tok.loc,
+                               "error in Parser::convert_token_to_op(): char "
+                               "managed to be more than one byte long");
+            exit(1);
+        }
+        return Op(tok.loc, OP_PUSH_CHAR, val.at(0), val);
+    } else if (tok.type == TOKEN_STRING)
         return Op(
             tok.loc, OP_PUSH_STR,
             add_escapes_to_string(tok.value.substr(1, tok.value.length() - 2)));
