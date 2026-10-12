@@ -11,7 +11,6 @@ fun linear_fib(Int) [Int]
 
 fun recursive_fib(Int) [Int]
   Int n @n
-  Int res
 
   &n &n 0 =
   &n 1 =
