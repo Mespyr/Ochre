@@ -1,0 +1,10 @@
+fun mod(Int Int) [Int] / swp pop
+
+fun check(Int) [Int]
+  2 mod 0 = cjmpet odd
+  odd: 0 return pop end 1
+
+fun main()
+  12 check dump 
+  13 check dump 
+  45 check dump 

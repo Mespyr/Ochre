@@ -448,6 +448,10 @@ void TypeChecker::check_op() {
             type_stack.push_back(t);
     } break;
 
+    case OP_RETURN: {
+        check_function_return_stack();
+    } break;
+
     case OP_FUN:
     case OP_END:
     case OP_STRUCT:

@@ -392,6 +392,11 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
             asmp.inst_mov(Argument(REGISTER_RSP), Argument(REGISTER_RAX)));
     } break;
 
+    case OP_RETURN:
+        asmp.new_inst(
+            asmp.inst_jmp("addr_" + std::to_string(func_addr) + "_return"));
+        break;
+
     case OP_CONST:
     case OP_DEFINE_VAR:
     case OP_END:

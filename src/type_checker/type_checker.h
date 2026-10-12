@@ -34,5 +34,6 @@ private:
 	void handle_jump_op(Op op);
 	void check_op();
 	void check_function();
+	void check_function_return_stack();
 	bool compare_type_stacks(std::vector<LangType> type_stack_1, std::vector<LangType> type_stack_2);
 };

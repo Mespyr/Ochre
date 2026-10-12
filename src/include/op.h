@@ -86,6 +86,7 @@ enum OpType {
 	OP_DELETE_PTR,
 	OP_TYPE_CAST,
 	OP_FUNCTION_CALL,
+	OP_RETURN,
 	// count | must always be last
 	OP_COUNT
 };

@@ -7,7 +7,7 @@
     (syntax-table)))
 
 (defconst ochre-keywords
-  '("fun" "struct" "const" "end" "import" ))
+  '("fun" "struct" "const" "end" "import" "return"))
 
 (defconst ochre-funcs '("cast" "delete" "call0" "call1" "call2" "call3" "call4" "call5" "call6" "dump" "argv"))
 

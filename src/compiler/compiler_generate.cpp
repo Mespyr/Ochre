@@ -28,6 +28,8 @@ void Compiler::generate_asm() {
 
         for (Op op : function.ops) gen_op_asm(op, function.addr);
 
+        asmp.new_inst(asmp.inst_label("addr_" + std::to_string(function.addr) +
+                                      "_return"));
         asmp.new_inst(
             asmp.inst_mov(Argument(REGISTER_RAX), Argument(REGISTER_RSP)));
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RSP),
