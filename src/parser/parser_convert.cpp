@@ -2,7 +2,7 @@
 
 Op Parser::convert_token_to_op(
     Token tok, std::map<std::string, std::pair<LangType, int>> var_offsets) {
-    static_assert(OP_COUNT == 59,
+    static_assert(OP_COUNT == 60,
                   "unhandled op types in Parser::convert_token_to_op()");
 
     if (tok.type == TOKEN_WORD) {
@@ -82,6 +82,9 @@ Op Parser::convert_token_to_op(
             return Op(tok.loc, OP_SYSCALL5);
         else if (tok.value == "call6")
             return Op(tok.loc, OP_SYSCALL6);
+        // argument stuff
+        else if (tok.value == "argv")
+            return Op(tok.loc, OP_PUSH_ARGV);
         // other
         // OP_PUSH_TYPE_INST
         else if (tok.value.front() == '<' && tok.value.back() == '>') {

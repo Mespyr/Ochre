@@ -344,6 +344,17 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
             Argument("str_" + std::to_string(asmp.string_data.size() - 1))));
     } break;
 
+    case OP_PUSH_ARGV: {
+        asmp.new_inst(
+            asmp.inst_mov(Argument(REGISTER_RAX), Argument("args_ptr", true)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RBX),
+                                    Argument(REGISTER_RAX, true)));
+        asmp.new_inst(asmp.inst_add(Argument(REGISTER_RAX), Argument(8)));
+        asmp.new_inst(
+            asmp.inst_push(Argument(REGISTER_RBX)));  // the length of argv
+        asmp.new_inst(asmp.inst_push(Argument(REGISTER_RAX)));  // argv itself
+    } break;
+
     case OP_PUSH_TYPE_INSTANCE: {
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX), Argument(9)));
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RDI), Argument(0)));

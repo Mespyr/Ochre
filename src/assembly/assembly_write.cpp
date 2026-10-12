@@ -66,6 +66,7 @@ void AssemblyProgram::write_to_file(std::string filename) {
         outfile.writeln("str_" + std::to_string(i) + ": db " + ss.str());
     }
 
+    outfile.writeln("args_ptr: rq 1");
     outfile.writeln("ret_stack_rsp: rq 1");
     outfile.writeln("ret_stack: rb 4096");
     outfile.writeln("ret_stack_end:");

@@ -1,0 +1,11 @@
+COMPILE: 0
+STDOUT:
+
+STDERR:
+
+RUN: 0
+STDOUT:
+1
+./a.out
+
+STDERR:

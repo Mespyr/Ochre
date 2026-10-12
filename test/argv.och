@@ -1,0 +1,7 @@
+fun println(Int ^Char)
+  1 1 call3 pop
+  "\n" 1 1 call3 pop
+
+fun main()
+  argv pop dump
+  argv &^Char 7 swp println pop

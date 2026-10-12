@@ -4,6 +4,8 @@ void Compiler::generate_asm() {
     // entry code
     asmp.start_new_function("start");
     asmp.new_inst(
+        asmp.inst_mov(Argument("args_ptr", true), Argument(REGISTER_RSP)));
+    asmp.new_inst(
         asmp.inst_mov(Argument(REGISTER_RAX), Argument("ret_stack_end")));
     asmp.new_inst(
         asmp.inst_mov(Argument("ret_stack_rsp", true), Argument(REGISTER_RAX)));
