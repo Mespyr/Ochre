@@ -27,9 +27,20 @@ void Compiler::optimize_func() {
         case INSTRUCTION_JMP:
         case INSTRUCTION_JZ:
         case INSTRUCTION_JNZ:
-            // cant be tracked across functions or loops
+            // cant be tracked across functions or jumps
             stored_registers.clear();
             break;
+
+		case INSTRUCTION_CMOVE:
+		case INSTRUCTION_CMOVG:
+		case INSTRUCTION_CMOVL:
+		case INSTRUCTION_CMOVGE:
+		case INSTRUCTION_CMOVLE:
+		case INSTRUCTION_CMOVNE:
+			// involved arguments cannot be tracked
+			remove_stored_register(i.arguments.front().reg_value);
+			remove_stored_register(i.arguments.back().reg_value);
+			break;
 
         default: break;
         }
