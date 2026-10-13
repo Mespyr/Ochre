@@ -4,6 +4,7 @@ void Compiler::handle_stack_pop_optim() {
     Instruction i = fn_key.second.at(idx);
     remove_stored_register(i.arguments.front().reg_value);
 
+    // find most recent push
     int64_t push_idx = find_idx_for_top_push();
     if (push_idx == -1) return;
 
@@ -20,23 +21,21 @@ void Compiler::handle_stack_pop_optim() {
         erase_idx(push_idx);
         return;
     }
+
+    // since push_idx < idx, we don't need to decrement it with an erasure
     fn_key.second.at(push_idx) = asmp.inst_mov(set_arg, pushed_arg);
     erase_idx(idx);
 
     /*
-      TODO:
-      check in stored registers to see if pushed reg has a value and use that as
-      arg using the reg might makes stuff weird with parralel execution and
-      force the program to wait for the prev inst to execute before moving when
-      both could be executed at the same time
+      this is kind of a niche optimization :)
 
-      Steps:
-      1. check if instruction before push_idx is setting the pushed_arg (assumed
-      register)
-      2. if it is, check after push_idx to see if register value is used at all
-      before being set again
-      3. if the register is set before being used, remove push_idx-1 and set the
-      2nd arg of push_idx to the 2nd arg of push_idx-1
+      after we create a mov instruction after a push/pop, there is a small
+      chance that this mov is right after another mov instruction. if the
+      previous mov instruction sets the register we are currently using to set
+      another, we can combine the two into one mov instruction, as long as the
+      contents of the register in question aren't being used in a future
+      instruction. We can check this by peering into future instructions and
+      making sure the register is set to a new value before being read.
 
       ex:
         mov rax, 10
@@ -44,8 +43,6 @@ void Compiler::handle_stack_pop_optim() {
       converts to:
         mov rdx, 10
     */
-    // std::cout << "wow" << std::endl;
-    // std::cout << fn_key.second.at(push_idx).to_string() << std::endl;
 
     // first, check if the argument written to the register IS ALSO a register
     if (pushed_arg.type != ARG_REGISTER || pushed_arg.read_pointer) return;
@@ -60,6 +57,10 @@ void Compiler::handle_stack_pop_optim() {
     // check if register is used after being set
     if (register_is_used_before_being_set_again(set_arg.reg_value, push_idx))
         return;
+
+    fn_key.second.at(push_idx) =
+        asmp.inst_mov(set_arg, prev_inst.arguments.at(1));
+    erase_idx(push_idx - 1);
 }
 
 void Compiler::handle_stack_push_optim() {

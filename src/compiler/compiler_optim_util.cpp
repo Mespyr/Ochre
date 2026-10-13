@@ -89,7 +89,7 @@ bool Compiler::register_is_used_before_being_set_again(AsmRegister reg,
         } break;
         case INSTRUCTION_MOV: {
             Argument arg1 = inst.arguments.front();
-            Argument arg2 = inst.arguments.front();
+            Argument arg2 = inst.arguments.back();
             if (arg1.type == ARG_REGISTER) {
                 if (arg1.reg_value == reg) {
                     // u are using the value inside the register to write data
@@ -121,7 +121,7 @@ bool Compiler::register_is_used_before_being_set_again(AsmRegister reg,
         case INSTRUCTION_CMOVLE:
         case INSTRUCTION_CMOVNE: {
             Argument arg1 = inst.arguments.front();
-            Argument arg2 = inst.arguments.front();
+            Argument arg2 = inst.arguments.back();
             if ((arg1.type == ARG_REGISTER && arg1.reg_value == reg) ||
                 (arg2.type == ARG_REGISTER && arg2.reg_value == reg))
                 return true;
@@ -130,7 +130,7 @@ bool Compiler::register_is_used_before_being_set_again(AsmRegister reg,
         // non-modifying 2-arity
         case INSTRUCTION_CMP: {
             Argument arg1 = inst.arguments.front();
-            Argument arg2 = inst.arguments.front();
+            Argument arg2 = inst.arguments.back();
             if (arg1.type == ARG_REGISTER) {
                 if (arg1.reg_value == reg) return true;
             }
