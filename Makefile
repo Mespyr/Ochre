@@ -1,5 +1,5 @@
 # config
-VERSION=0.1.0
+VERSION=0.2.1
 CPP=clang++
 PREFIX = /usr/local
 BINDIR = $(PREFIX)/bin
