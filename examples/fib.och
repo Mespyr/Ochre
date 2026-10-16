@@ -1,20 +1,10 @@
-fun linear_fib(Int) [Int]
-  Int i @i
-  1 0 algo:
-	&i 2 = cjmpet algo
-    over + swp
-	&i 1 - @i
-	jmp algo
-  end +
-  
-fun recursive_fib(Int) [Int]
+fun fibonacci(Int) [Int]
   dup 0 != over 1 != and cjmpt recursion
   return
   recursion:
-    dup 1 - recursive_fib
-    swp 2 - recursive_fib +
+    dup 1 - fibonacci
+    swp 2 - fibonacci +
   end
 
 fun main()
-  92 linear_fib dump
-  40 recursive_fib dump
+  40 fibonacci dump

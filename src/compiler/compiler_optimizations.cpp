@@ -31,16 +31,16 @@ void Compiler::optimize_func() {
             stored_registers.clear();
             break;
 
-		case INSTRUCTION_CMOVE:
-		case INSTRUCTION_CMOVG:
-		case INSTRUCTION_CMOVL:
-		case INSTRUCTION_CMOVGE:
-		case INSTRUCTION_CMOVLE:
-		case INSTRUCTION_CMOVNE:
-			// involved arguments cannot be tracked
-			remove_stored_register(i.arguments.front().reg_value);
-			remove_stored_register(i.arguments.back().reg_value);
-			break;
+        case INSTRUCTION_CMOVE:
+        case INSTRUCTION_CMOVG:
+        case INSTRUCTION_CMOVL:
+        case INSTRUCTION_CMOVGE:
+        case INSTRUCTION_CMOVLE:
+        case INSTRUCTION_CMOVNE:
+            // involved arguments cannot be tracked
+            remove_stored_register(i.arguments.front().reg_value);
+            remove_stored_register(i.arguments.back().reg_value);
+            break;
 
         default: break;
         }
