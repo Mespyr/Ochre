@@ -39,6 +39,7 @@ private:
 	// mov optimizations
 	bool check_mov_reg_args(Instruction i);
 	void handle_mov_reg_optim();
+	void optimize_consecutive_movs(uint64_t idx);
 	void compare_stored_values_mov(Instruction i, AsmRegister write_reg, int64_t save_value);
 
 	bool arguments_equal(Argument a, Argument b);

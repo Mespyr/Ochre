@@ -47,7 +47,8 @@ int main(int argc, const char* argv[]) {
 
     Compiler compiler(type_checker.program);
     compiler.generate_asm();
-    compiler.perform_optimizations();
+	int optimize_count = 3;
+	while (optimize_count--) compiler.perform_optimizations();
     compiler.write_asm_to_file(args.asm_filename());
 
     const std::string& compile_command =

@@ -110,10 +110,11 @@ bool Compiler::register_is_used_before_being_set_again(AsmRegister reg,
             if (reg == REGISTER_RAX || reg == REGISTER_RDX) return false;
         } break;
 
-        // first-modifying 2-arity using first arg too
+        // 2-arity using both arguments
         case INSTRUCTION_ADD:
         case INSTRUCTION_SUB:
         case INSTRUCTION_IMUL:
+		case INSTRUCTION_CMP:
         case INSTRUCTION_CMOVE:
         case INSTRUCTION_CMOVG:
         case INSTRUCTION_CMOVL:
@@ -127,24 +128,13 @@ bool Compiler::register_is_used_before_being_set_again(AsmRegister reg,
                 return true;
         } break;
 
-        // non-modifying 2-arity
-        case INSTRUCTION_CMP: {
-            Argument arg1 = inst.arguments.front();
-            Argument arg2 = inst.arguments.back();
-            if (arg1.type == ARG_REGISTER) {
-                if (arg1.reg_value == reg) return true;
-            }
-            if (arg2.type == ARG_REGISTER)
-                if (arg2.reg_value == reg) return true;
-        } break;
-
         case INSTRUCTION_CALL:
         case INSTRUCTION_LABEL:
         case INSTRUCTION_JMP:
         case INSTRUCTION_JZ:
         case INSTRUCTION_JNZ:
         case INSTRUCTION_RET:  // JUST TO MAKE SURE IDK
-            return false;
+            return true;
 
         case INSTRUCTION_SYSCALL: return true;
 

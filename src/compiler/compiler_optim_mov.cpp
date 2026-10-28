@@ -35,6 +35,47 @@ void Compiler::compare_stored_values_mov(Instruction i, AsmRegister write_reg,
             asmp.inst_xor(i.arguments.front(), i.arguments.front());
 }
 
+void Compiler::optimize_consecutive_movs(uint64_t mov_idx) {
+    /*
+      after we create a mov instruction after a push/pop, there is a small
+      chance that this mov is right after another mov instruction. if the
+      previous mov instruction sets the register we are currently using to set
+      another, we can combine the two into one mov instruction, as long as the
+      contents of the register in question aren't being used in a future
+      instruction. We can check this by peering into future instructions and
+      making sure the register is set to a new value before being read.
+
+      ex:
+        mov rax, 10
+        mov rdx, rax
+      converts to:
+        mov rdx, 10
+    */
+
+    Instruction instruction = fn_key.second.at(mov_idx);
+    Argument    set_register = instruction.arguments.at(0);
+    Argument    read_register = instruction.arguments.at(1);
+
+    if (read_register.type != ARG_REGISTER || read_register.read_pointer)
+        return;
+
+    Instruction previous_instruction = fn_key.second.at(mov_idx - 1);
+    Argument previous_set_register = previous_instruction.arguments.at(0);
+
+    if (previous_instruction.type != INSTRUCTION_MOV) return;
+    if (previous_set_register.type != ARG_REGISTER || set_register.read_pointer)
+        return;
+    if (previous_set_register.reg_value != read_register.reg_value) return;
+
+    if (register_is_used_before_being_set_again(read_register.reg_value,
+                                                mov_idx))
+        return;
+
+    fn_key.second.at(mov_idx) =
+        asmp.inst_mov(set_register, previous_instruction.arguments.at(1));
+    erase_idx(mov_idx - 1);
+}
+
 void Compiler::handle_mov_reg_optim() {
     Instruction i = fn_key.second.at(idx);
     if (!check_mov_reg_args(i)) return;
@@ -61,6 +102,8 @@ void Compiler::handle_mov_reg_optim() {
         int64_t diff = int_val - stored_registers.at(write_reg.reg_value);
         if (diff == 0) erase_idx(idx);
         stored_registers[write_reg.reg_value] = int_val;
-    } else
+    } else {
         stored_registers.insert({write_reg.reg_value, int_val});
+        optimize_consecutive_movs(idx);
+    }
 }
