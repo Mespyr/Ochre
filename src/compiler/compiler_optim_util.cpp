@@ -129,14 +129,13 @@ bool Compiler::register_is_used_before_being_set_again(AsmRegister reg,
         } break;
 
         case INSTRUCTION_CALL:
+        case INSTRUCTION_SYSCALL:
         case INSTRUCTION_LABEL:
         case INSTRUCTION_JMP:
         case INSTRUCTION_JZ:
         case INSTRUCTION_JNZ:
         case INSTRUCTION_RET:  // JUST TO MAKE SURE IDK
             return true;
-
-        case INSTRUCTION_SYSCALL: return true;
 
         default: break;
         }
