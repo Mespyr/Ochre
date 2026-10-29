@@ -4,9 +4,8 @@ void Parser::parse_function(Op current_op) {
     i++;
     // check if function name is in the token stream
     if (i >= tokens.size()) {
-        print_error_at_loc(
-            current_op.loc,
-            "unexpected EOF found while parsing function definition");
+        print_error_at_loc(current_op.loc,
+                           "unexpected EOF found while parsing function definition");
         exit(1);
     }
 
@@ -18,21 +17,18 @@ void Parser::parse_function(Op current_op) {
         print_error_at_loc(name_token.loc, "illegal name for function");
         exit(1);
     } else if (program.functions.count(function_name)) {
-        print_error_at_loc(name_token.loc,
-                           "function '" + function_name + "' already exists");
+        print_error_at_loc(name_token.loc, "function '" + function_name + "' already exists");
         exit(1);
     } else if (program.structs.count(function_name)) {
-        print_error_at_loc(name_token.loc,
-                           "struct '" + function_name + "' already exists");
+        print_error_at_loc(name_token.loc, "struct '" + function_name + "' already exists");
         exit(1);
     }
     i++;
 
     // check if eof before argument parsing
     if (i >= tokens.size()) {
-        print_error_at_loc(
-            current_op.loc,
-            "unexpected EOF found while parsing function definition");
+        print_error_at_loc(current_op.loc,
+                           "unexpected EOF found while parsing function definition");
         exit(1);
     }
 

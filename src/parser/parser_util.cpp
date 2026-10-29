@@ -5,8 +5,7 @@
 
 bool Parser::is_legal_name(Token token_name, bool is_function_name) {
     // if token is an integer or string
-    if (token_name.type == TOKEN_INT || token_name.type == TOKEN_STRING)
-        return false;
+    if (token_name.type == TOKEN_INT || token_name.type == TOKEN_STRING) return false;
     // any illegal characters in names
     if (token_name.value.find('"') != std::string::npos) return false;
     if (token_name.value.find(':') != std::string::npos) return false;
@@ -16,8 +15,7 @@ bool Parser::is_legal_name(Token token_name, bool is_function_name) {
     // functions are allowed extra names cuz they don't infringe on other syntax
     if (!is_function_name)
         if (token_name.value.find('.') != std::string::npos) return false;
-    if (token_name.value.front() == '<' || token_name.value.back() == '>')
-        return false;
+    if (token_name.value.front() == '<' || token_name.value.back() == '>') return false;
     // if token is builtin word or type name
     if (is_builtin_word(token_name.value)) return false;
     if (is_prim_type(token_name.value)) return false;
@@ -84,8 +82,7 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
 
         case OP_PLUS: {
             if (stack.size() < 2) {
-                print_not_enough_arguments_error(op.loc, 2, stack.size(), "+",
-                                                 "addition");
+                print_not_enough_arguments_error(op.loc, 2, stack.size(), "+", "addition");
                 exit(1);
             }
             int64_t a = stack.back();
@@ -97,8 +94,7 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
 
         case OP_MINUS: {
             if (stack.size() < 2) {
-                print_not_enough_arguments_error(op.loc, 2, stack.size(), "-",
-                                                 "subtraction");
+                print_not_enough_arguments_error(op.loc, 2, stack.size(), "-", "subtraction");
                 exit(1);
             }
             // b, a = b - a
@@ -111,8 +107,7 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
 
         case OP_MUL: {
             if (stack.size() < 2) {
-                print_not_enough_arguments_error(op.loc, 2, stack.size(), "*",
-                                                 "multiplication");
+                print_not_enough_arguments_error(op.loc, 2, stack.size(), "*", "multiplication");
                 exit(1);
             }
             int64_t a = stack.back();
@@ -124,8 +119,7 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
 
         case OP_DIV: {
             if (stack.size() < 2) {
-                print_not_enough_arguments_error(op.loc, 2, stack.size(), "/",
-                                                 "division");
+                print_not_enough_arguments_error(op.loc, 2, stack.size(), "/", "division");
                 exit(1);
             }
             // b, a = b/a, b%a
@@ -139,8 +133,7 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
 
         case OP_POP: {
             if (stack.size() < 1) {
-                print_not_enough_arguments_error(op.loc, 1, stack.size(),
-                                                 "pop");
+                print_not_enough_arguments_error(op.loc, 1, stack.size(), "pop");
                 exit(1);
             }
             stack.pop_back();
@@ -148,8 +141,7 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
 
         case OP_SWP: {
             if (stack.size() < 2) {
-                print_not_enough_arguments_error(op.loc, 2, stack.size(),
-                                                 "swp");
+                print_not_enough_arguments_error(op.loc, 2, stack.size(), "swp");
                 exit(1);
             }
             // b, a = a, b
@@ -176,9 +168,8 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
             exit(1);
 
         default:
-            print_error_at_loc(
-                op.loc,
-                "unsuppored keyword in compile-time evaluation of expression");
+            print_error_at_loc(op.loc,
+                               "unsuppored keyword in compile-time evaluation of expression");
             exit(1);
         }
         if (!inside_const_def)
@@ -189,15 +180,13 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
     }
 
     if (stack.size() > 1) {
-        print_error_at_loc(
-            definition_loc,
-            "too many values on stack for definition (expected 1, got " +
-                std::to_string(stack.size()));
+        print_error_at_loc(definition_loc,
+                           "too many values on stack for definition (expected 1, got " +
+                               std::to_string(stack.size()));
         exit(1);
     } else if (stack.size() < 1) {
-        print_error_at_loc(
-            definition_loc,
-            "not enough values on stack for definition (expected 1, got 0)");
+        print_error_at_loc(definition_loc,
+                           "not enough values on stack for definition (expected 1, got 0)");
         exit(1);
     }
     return stack.back();

@@ -1,24 +1,21 @@
 #include "assembly.h"
 
 // backend
-Instruction AssemblyProgram::inst_1_arity_backend(InstructionType type,
-                                                  Argument        arg) {
+Instruction AssemblyProgram::inst_1_arity_backend(InstructionType type, Argument arg) {
     Instruction i(type);
     i.arguments.push_back(arg);
     return i;
 }
 
-Instruction AssemblyProgram::inst_2_arity_backend(InstructionType type,
-                                                  Argument        arg1,
-                                                  Argument        arg2) {
+Instruction AssemblyProgram::inst_2_arity_backend(InstructionType type, Argument arg1,
+                                                  Argument arg2) {
     Instruction i(type);
     i.arguments.push_back(arg1);
     i.arguments.push_back(arg2);
     return i;
 }
 
-Instruction AssemblyProgram::inst_name_arg_backend(InstructionType type,
-                                                   std::string     name) {
+Instruction AssemblyProgram::inst_name_arg_backend(InstructionType type, std::string name) {
     return Instruction(type, name);
 }
 
@@ -123,8 +120,6 @@ Instruction AssemblyProgram::inst_call(std::string func_name) {
     return inst_name_arg_backend(INSTRUCTION_CALL, func_name);
 }
 
-Instruction AssemblyProgram::inst_syscall() {
-    return Instruction(INSTRUCTION_SYSCALL);
-}
+Instruction AssemblyProgram::inst_syscall() { return Instruction(INSTRUCTION_SYSCALL); }
 
 Instruction AssemblyProgram::inst_ret() { return Instruction(INSTRUCTION_RET); }

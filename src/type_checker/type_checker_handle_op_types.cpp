@@ -21,17 +21,15 @@ void TypeChecker::handle_arithmetic_op(Op op) {
         name = "/";
         break;
     default:
-        print_error_at_loc(
-            op.loc,
-            "This is an error in the type checker. Non-arithmetic opcode was "
-            "sent to arithmetic handler");
+        print_error_at_loc(op.loc,
+                           "This is an error in the type checker. Non-arithmetic opcode was "
+                           "sent to arithmetic handler");
         exit(1);
         break;
     }
 
     if (type_stack.size() < 2) {
-        print_not_enough_arguments_error(op.loc, 2, type_stack.size(), name,
-                                         fullname);
+        print_not_enough_arguments_error(op.loc, 2, type_stack.size(), name, fullname);
         exit(1);
     }
 
@@ -42,15 +40,11 @@ void TypeChecker::handle_arithmetic_op(Op op) {
 
     if (is_prim_type_int(a) && is_prim_type_int(b)) {
         type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
-        if (op.type == OP_DIV)
-            type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
+        if (op.type == OP_DIV) type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
     } else {
-        print_invalid_combination_of_types_error(op.loc, {b, a}, name,
-                                                 fullname);
-        print_note_at_loc(
-            b.loc, "first value pushed here (" + human_readable_type(b) + ")");
-        print_note_at_loc(
-            a.loc, "second value pushed here (" + human_readable_type(a) + ")");
+        print_invalid_combination_of_types_error(op.loc, {b, a}, name, fullname);
+        print_note_at_loc(b.loc, "first value pushed here (" + human_readable_type(b) + ")");
+        print_note_at_loc(a.loc, "second value pushed here (" + human_readable_type(a) + ")");
         exit(1);
     }
 }
@@ -86,17 +80,15 @@ void TypeChecker::handle_comparison_op(Op op) {
     case OP_AND: name = "and"; break;
     case OP_OR: name = "or"; break;
     default:
-        print_error_at_loc(
-            op.loc,
-            "This is an error in the type checker. Non-comparison opcode was "
-            "sent to comparison handler");
+        print_error_at_loc(op.loc,
+                           "This is an error in the type checker. Non-comparison opcode was "
+                           "sent to comparison handler");
         exit(1);
         break;
     }
 
     if (type_stack.size() < 2) {
-        print_not_enough_arguments_error(op.loc, 2, type_stack.size(), name,
-                                         fullname);
+        print_not_enough_arguments_error(op.loc, 2, type_stack.size(), name, fullname);
         exit(1);
     }
 
@@ -108,12 +100,9 @@ void TypeChecker::handle_comparison_op(Op op) {
     if (types_equal(a, b))
         type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
     else {
-        print_invalid_combination_of_types_error(op.loc, {b, a}, name,
-                                                 fullname);
-        print_note_at_loc(b.loc, "first argument found here (" +
-                                     human_readable_type(b) + ")");
-        print_note_at_loc(a.loc, "second argument found here (" +
-                                     human_readable_type(a) + ")");
+        print_invalid_combination_of_types_error(op.loc, {b, a}, name, fullname);
+        print_note_at_loc(b.loc, "first argument found here (" + human_readable_type(b) + ")");
+        print_note_at_loc(a.loc, "second argument found here (" + human_readable_type(a) + ")");
         exit(1);
     }
 }
@@ -162,8 +151,7 @@ void TypeChecker::handle_syscall_op(Op op) {
     }
 
     if (type_stack.size() < stack_size) {
-        print_not_enough_arguments_error(op.loc, stack_size, type_stack.size(),
-                                         name);
+        print_not_enough_arguments_error(op.loc, stack_size, type_stack.size(), name);
         exit(1);
     }
 
@@ -172,10 +160,8 @@ void TypeChecker::handle_syscall_op(Op op) {
     for (uint8_t i = 1; i < stack_size; i++) type_stack.pop_back();
 
     if (!is_prim_type_int(a)) {
-        print_invalid_type_error(op.loc, prim_type_name(TYPE_INT),
-                                 human_readable_type(a), name);
-        print_note_at_loc(a.loc, "syscall number pushed here (" +
-                                     human_readable_type(a) + ")");
+        print_invalid_type_error(op.loc, prim_type_name(TYPE_INT), human_readable_type(a), name);
+        print_note_at_loc(a.loc, "syscall number pushed here (" + human_readable_type(a) + ")");
         exit(1);
     }
     type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
@@ -222,10 +208,9 @@ void TypeChecker::handle_jump_op(Op op) {
     type_stack.pop_back();
 
     if (!is_prim_type_int(a)) {
-        print_invalid_type_error(op.loc, prim_type_name(TYPE_INT),
-                                 human_readable_type(a), name, fullname);
-        print_note_at_loc(a.loc, "first argument found here (" +
-                                     human_readable_type(a) + ")");
+        print_invalid_type_error(op.loc, prim_type_name(TYPE_INT), human_readable_type(a), name,
+                                 fullname);
+        print_note_at_loc(a.loc, "first argument found here (" + human_readable_type(a) + ")");
         exit(1);
     }
     jump_op_stack_states.push_back({op, type_stack});

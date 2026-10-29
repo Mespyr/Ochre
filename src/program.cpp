@@ -11,11 +11,9 @@ std::vector<std::string> split_by_dot(std::string str) {
     std::vector<std::string> split;
     uint64_t                 pos = str.find(".");
     while (pos != std::string::npos) {
-        split.push_back(
-            str.substr(0, pos));  // push back everything before the period
-        str = str.substr(pos +
-                         1);  // set the string to everything after the period
-        pos = str.find(".");  // find the next period
+        split.push_back(str.substr(0, pos));  // push back everything before the period
+        str = str.substr(pos + 1);            // set the string to everything after the period
+        pos = str.find(".");                  // find the next period
     }
     return split;
 }
@@ -39,10 +37,8 @@ std::string human_readable_type(LangType t) {
     return str + t.base_type;
 }
 
-std::pair<LangType, int> struct_member_offset(
-    Op op, std::map<std::string, Struct> structs) {
-    static_assert(PRIM_TYPES_COUNT == 2,
-                  "unhandled prim types in struct_member_offset()");
+std::pair<LangType, int> struct_member_offset(Op op, std::map<std::string, Struct> structs) {
+    static_assert(PRIM_TYPES_COUNT == 2, "unhandled prim types in struct_member_offset()");
 
     std::vector<std::string> split_member_path = split_by_dot(op.str_operand);
     std::string              type_name = split_member_path.front();
@@ -55,12 +51,9 @@ std::pair<LangType, int> struct_member_offset(
         LangType member_type(op.loc);
 
         while (current_member_idx < split_member_path.size()) {
-            if (!struct_members.count(
-                    split_member_path.at(current_member_idx))) {
-                print_error_at_loc(op.loc, "struct '" + type_name +
-                                               "' doesn't have the member '" +
-                                               split_member_path.at(1) +
-                                               "' defined");
+            if (!struct_members.count(split_member_path.at(current_member_idx))) {
+                print_error_at_loc(op.loc, "struct '" + type_name + "' doesn't have the member '" +
+                                               split_member_path.at(1) + "' defined");
                 exit(1);
             }
             std::pair<LangType, int> member_type_offset_pair =
@@ -72,8 +65,7 @@ std::pair<LangType, int> struct_member_offset(
             if (structs.count(member_type_offset_pair.first.base_type) &&
                 member_type_offset_pair.first.ptr_to_trace == 0 &&
                 current_member_idx < split_member_path.size() - 1) {
-                struct_members =
-                    structs.at(member_type_offset_pair.first.base_type).members;
+                struct_members = structs.at(member_type_offset_pair.first.base_type).members;
                 current_member_idx++;
             } else {
                 member_type = member_type_offset_pair.first;
@@ -82,18 +74,16 @@ std::pair<LangType, int> struct_member_offset(
         }
         return {member_type, offset};
     }
-    print_error_at_loc(
-        op.loc,
-        "compiler error: non-existant struct type was passed into the function "
-        "struct_member_offset() when this function checks for the ");
+    print_error_at_loc(op.loc,
+                       "compiler error: non-existant struct type was passed into the function "
+                       "struct_member_offset() when this function checks for the ");
     exit(1);
 }
 
 std::pair<LangType, int> variable_member_offset(
     Op op, std::map<std::string, std::pair<LangType, int>> var_offsets,
     std::map<std::string, Struct> structs) {
-    static_assert(PRIM_TYPES_COUNT == 2,
-                  "unhandled prim types in variable_member_offset()");
+    static_assert(PRIM_TYPES_COUNT == 2, "unhandled prim types in variable_member_offset()");
 
     std::vector<std::string> split_member_path = split_by_dot(op.str_operand);
     std::string              var_name = split_member_path.front();
@@ -112,19 +102,15 @@ std::pair<LangType, int> variable_member_offset(
         }
         std::map<std::string, std::pair<LangType, int>> struct_members =
             structs.at(var_offsets.at(var_name).first.base_type).members;
-        int offset =
-            var_offsets.at(var_name).second;  // set offset to start of variable
+        int      offset = var_offsets.at(var_name).second;  // set offset to start of variable
         uint64_t current_member_idx = 1;
         LangType member_type(op.loc);
 
         while (current_member_idx < split_member_path.size()) {
-            if (!struct_members.count(
-                    split_member_path.at(current_member_idx))) {
-                print_error_at_loc(
-                    op.loc, "struct '" +
-                                var_offsets.at(var_name).first.base_type +
-                                "' doesn't have the member '" +
-                                split_member_path.at(1) + "' defined");
+            if (!struct_members.count(split_member_path.at(current_member_idx))) {
+                print_error_at_loc(op.loc, "struct '" + var_offsets.at(var_name).first.base_type +
+                                               "' doesn't have the member '" +
+                                               split_member_path.at(1) + "' defined");
                 exit(1);
             }
             std::pair<LangType, int> member_type_offset_pair =
@@ -136,8 +122,7 @@ std::pair<LangType, int> variable_member_offset(
             if (structs.count(member_type_offset_pair.first.base_type) &&
                 member_type_offset_pair.first.ptr_to_trace == 0 &&
                 current_member_idx < split_member_path.size() - 1) {
-                struct_members =
-                    structs.at(member_type_offset_pair.first.base_type).members;
+                struct_members = structs.at(member_type_offset_pair.first.base_type).members;
                 current_member_idx++;
             } else {
                 member_type = member_type_offset_pair.first;
@@ -155,8 +140,7 @@ std::string prim_type_name(LangPrimType type) {
     case TYPE_INT: return "Int"; break;
     case TYPE_CHAR: return "Char"; break;
     case PRIM_TYPES_COUNT:
-        print_error(
-            "DONT PASS PRIM_TYPES_COUNT INTO prim_type_name(LangPrimType)");
+        print_error("DONT PASS PRIM_TYPES_COUNT INTO prim_type_name(LangPrimType)");
         exit(1);
     }
     exit(1);
@@ -195,30 +179,25 @@ bool types_equal(LangType a, LangType b) {
 }
 
 bool is_prim_type(LangType t) {
-    static_assert(PRIM_TYPES_COUNT == 2,
-                  "unhandled prim types in is_prim_type(LangType)");
+    static_assert(PRIM_TYPES_COUNT == 2, "unhandled prim types in is_prim_type(LangType)");
 
-    if (t.base_type == prim_type_name(TYPE_INT) ||
-        t.base_type == prim_type_name(TYPE_CHAR))
+    if (t.base_type == prim_type_name(TYPE_INT) || t.base_type == prim_type_name(TYPE_CHAR))
         return true;
 
     return false;
 }
 bool is_prim_type(std::string t) {
-    static_assert(PRIM_TYPES_COUNT == 2,
-                  "unhandled prim types in is_prim_type(std::string)");
+    static_assert(PRIM_TYPES_COUNT == 2, "unhandled prim types in is_prim_type(std::string)");
 
     std::string base_t = parse_type_str(t).first;
-    if (base_t == prim_type_name(TYPE_INT) ||
-        base_t == prim_type_name(TYPE_CHAR))
-        return true;
+    if (base_t == prim_type_name(TYPE_INT) || base_t == prim_type_name(TYPE_CHAR)) return true;
 
     return false;
 }
 
 bool is_prim_type_int(LangType t) {
-    return (t.ptr_to_trace == 0 && (t.base_type == prim_type_name(TYPE_INT) ||
-                                    t.base_type == prim_type_name(TYPE_CHAR)));
+    return (t.ptr_to_trace == 0 &&
+            (t.base_type == prim_type_name(TYPE_INT) || t.base_type == prim_type_name(TYPE_CHAR)));
 }
 
 bool is_prim_type_int(std::string t) {

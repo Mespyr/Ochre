@@ -48,8 +48,7 @@ void AssemblyProgram::write_to_file(std::string filename) {
     write_beginning_boilerplate(&outfile);
     for (std::pair<std::string, std::vector<Instruction>> fn_key : code) {
         outfile.writeln(fn_key.first + ":");
-        for (Instruction i : fn_key.second)
-            outfile.writeln("\t" + i.to_string());
+        for (Instruction i : fn_key.second) outfile.writeln("\t" + i.to_string());
     }
 
     // start data segment

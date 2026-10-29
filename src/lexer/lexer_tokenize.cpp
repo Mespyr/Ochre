@@ -16,30 +16,27 @@ void Lexer::tokenize_line() {
 
             // check if col_end is at end of line
             if (column_number_end >= line.length()) {
-                print_error_at_loc(Location(line_number, column_number_start,
-                                            column_number_end, line, filename),
-                                   "unexpected EOL while tokenizing string");
+                print_error_at_loc(
+                    Location(line_number, column_number_start, column_number_end, line, filename),
+                    "unexpected EOL while tokenizing string");
                 exit(1);
             }
             // inc col_end so it points to after '"'
             column_number_end++;
 
-            tokens.push_back(
-                Token(line.substr(column_number_start,
-                                  column_number_end - column_number_start),
-                      TOKEN_STRING,
-                      Location(line_number, column_number_start,
-                               column_number_end, line, filename)));
+            tokens.push_back(Token(
+                line.substr(column_number_start, column_number_end - column_number_start),
+                TOKEN_STRING,
+                Location(line_number, column_number_start, column_number_end, line, filename)));
 
         }
         // if token is a char
         else if (line.at(column_number_start) == '\'') {
             // if "'" is at the end of line
             if (column_number_start + 1 >= line.length()) {
-                print_error_at_loc(
-                    Location(line_number, column_number_start,
-                             column_number_start + 1, line, filename),
-                    "unexpected EOL while tokenizing char");
+                print_error_at_loc(Location(line_number, column_number_start,
+                                            column_number_start + 1, line, filename),
+                                   "unexpected EOL while tokenizing char");
                 exit(1);
             }
             // if the character is an escape sequence
@@ -49,52 +46,45 @@ void Lexer::tokenize_line() {
                 column_number_end = column_number_start + 2;
             // if the end column is greater than the line length
             if (column_number_end >= line.length()) {
-                print_error_at_loc(Location(line_number, column_number_start,
-                                            column_number_end, line, filename),
-                                   "unexpected EOL while tokenizing char");
+                print_error_at_loc(
+                    Location(line_number, column_number_start, column_number_end, line, filename),
+                    "unexpected EOL while tokenizing char");
                 exit(1);
             }
             // if it isn't closed with a "'"
             if (line.at(column_number_end) != '\'') {
                 print_error_at_loc(
-                    Location(line_number, column_number_start,
-                             column_number_end, line, filename),
+                    Location(line_number, column_number_start, column_number_end, line, filename),
                     "unexpected character found while tokenizing char");
                 exit(1);
             }
             // point the end after "'"
             column_number_end++;
-            tokens.push_back(
-                Token(line.substr(column_number_start,
-                                  column_number_end - column_number_start),
-                      TOKEN_CHAR,
-                      Location(line_number, column_number_start,
-                               column_number_end, line, filename)));
+            tokens.push_back(Token(
+                line.substr(column_number_start, column_number_end - column_number_start),
+                TOKEN_CHAR,
+                Location(line_number, column_number_start, column_number_end, line, filename)));
 
         }
         // if token is any of these chars ()[]
-        else if (line.at(column_number_start) == '(' ||
-                 line.at(column_number_start) == ')' ||
-                 line.at(column_number_start) == '[' ||
-                 line.at(column_number_start) == ']') {
-            tokens.push_back(
-                Token(line.substr(column_number_start, 1), TOKEN_WORD,
-                      Location(line_number, column_number_start,
-                               column_number_start + 1, line, filename)));
+        else if (line.at(column_number_start) == '(' || line.at(column_number_start) == ')' ||
+                 line.at(column_number_start) == '[' || line.at(column_number_start) == ']') {
+            tokens.push_back(Token(line.substr(column_number_start, 1), TOKEN_WORD,
+                                   Location(line_number, column_number_start,
+                                            column_number_start + 1, line, filename)));
             // one after the char
             column_number_end = column_number_start + 1;
         } else {
             column_number_end = find_token_end_col(column_number_start);
 
-            std::string token_str = line.substr(
-                column_number_start, column_number_end - column_number_start);
+            std::string token_str =
+                line.substr(column_number_start, column_number_end - column_number_start);
             TokenType token_type = TOKEN_WORD;
             if (is_number(token_str)) token_type = TOKEN_INT;
 
-            tokens.push_back(
-                Token(token_str, token_type,
-                      Location(line_number, column_number_start,
-                               column_number_end, line, filename)));
+            tokens.push_back(Token(
+                token_str, token_type,
+                Location(line_number, column_number_start, column_number_end, line, filename)));
         }
 
         // get start position of next token
@@ -105,8 +95,7 @@ void Lexer::tokenize_line() {
 void Lexer::tokenize() {
     File file(filename, FILE_READ);
     if (!file.exists()) {
-        print_error("couldn't open file '" + filename +
-                    "': " + strerror(errno));
+        print_error("couldn't open file '" + filename + "': " + strerror(errno));
         exit(1);
     }
 

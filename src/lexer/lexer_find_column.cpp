@@ -1,16 +1,14 @@
 #include "lexer.h"
 
 uint64_t Lexer::find_next_token_start_col(uint64_t column_number) {
-    while (column_number < line.length() &&
-           std::isspace(line.at(column_number)) &&
+    while (column_number < line.length() && std::isspace(line.at(column_number)) &&
            line.at(column_number) != '#')
         column_number++;
     return column_number;
 }
 
 uint64_t Lexer::find_token_end_col(uint64_t column_number) {
-    while (column_number < line.length() &&
-           !std::isspace(line.at(column_number)) &&
+    while (column_number < line.length() && !std::isspace(line.at(column_number)) &&
            line.at(column_number) != '#' && line.at(column_number) != '(' &&
            line.at(column_number) != ')' && line.at(column_number) != '[' &&
            line.at(column_number) != ']')

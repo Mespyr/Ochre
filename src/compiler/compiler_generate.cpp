@@ -3,39 +3,27 @@
 void Compiler::generate_asm() {
     // entry code
     asmp.start_new_function("start");
-    asmp.new_inst(
-        asmp.inst_mov(Argument("args_ptr", true), Argument(REGISTER_RSP)));
-    asmp.new_inst(
-        asmp.inst_mov(Argument(REGISTER_RAX), Argument("ret_stack_end")));
-    asmp.new_inst(
-        asmp.inst_mov(Argument("ret_stack_rsp", true), Argument(REGISTER_RAX)));
-    asmp.new_inst(asmp.inst_call(
-        "func_addr_" + std::to_string(program.functions.at("main").addr)));
+    asmp.new_inst(asmp.inst_mov(Argument("args_ptr", true), Argument(REGISTER_RSP)));
+    asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX), Argument("ret_stack_end")));
+    asmp.new_inst(asmp.inst_mov(Argument("ret_stack_rsp", true), Argument(REGISTER_RAX)));
+    asmp.new_inst(asmp.inst_call("func_addr_" + std::to_string(program.functions.at("main").addr)));
     asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX), Argument(60)));
     asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RDI), Argument(0)));
     asmp.new_inst(asmp.inst_syscall());
 
-    for (auto fn_key = program.functions.begin();
-         fn_key != program.functions.end(); fn_key++) {
+    for (auto fn_key = program.functions.begin(); fn_key != program.functions.end(); fn_key++) {
         Function function = fn_key->second;
         asmp.start_new_function("func_addr_" + std::to_string(function.addr));
-        asmp.new_inst(asmp.inst_sub(Argument(REGISTER_RSP),
-                                    Argument(function.memory_capacity)));
-        asmp.new_inst(asmp.inst_mov(Argument("ret_stack_rsp", true),
-                                    Argument(REGISTER_RSP)));
-        asmp.new_inst(
-            asmp.inst_mov(Argument(REGISTER_RSP), Argument(REGISTER_RAX)));
+        asmp.new_inst(asmp.inst_sub(Argument(REGISTER_RSP), Argument(function.memory_capacity)));
+        asmp.new_inst(asmp.inst_mov(Argument("ret_stack_rsp", true), Argument(REGISTER_RSP)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RSP), Argument(REGISTER_RAX)));
 
         for (Op op : function.ops) gen_op_asm(op, function.addr);
 
-        asmp.new_inst(asmp.inst_label("addr_" + std::to_string(function.addr) +
-                                      "_return"));
-        asmp.new_inst(
-            asmp.inst_mov(Argument(REGISTER_RAX), Argument(REGISTER_RSP)));
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RSP),
-                                    Argument("ret_stack_rsp", true)));
-        asmp.new_inst(asmp.inst_add(Argument(REGISTER_RSP),
-                                    Argument(function.memory_capacity)));
+        asmp.new_inst(asmp.inst_label("addr_" + std::to_string(function.addr) + "_return"));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX), Argument(REGISTER_RSP)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RSP), Argument("ret_stack_rsp", true)));
+        asmp.new_inst(asmp.inst_add(Argument(REGISTER_RSP), Argument(function.memory_capacity)));
         asmp.new_inst(asmp.inst_ret());
     }
 }

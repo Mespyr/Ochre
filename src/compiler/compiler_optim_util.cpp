@@ -1,8 +1,6 @@
 #include "compiler.h"
 
-bool Compiler::arguments_equal(Argument a, Argument b) {
-    return a.to_string() == b.to_string();
-}
+bool Compiler::arguments_equal(Argument a, Argument b) { return a.to_string() == b.to_string(); }
 
 void Compiler::erase_idx(uint32_t i) {
     fn_key.second.erase(fn_key.second.begin() + i);
@@ -58,8 +56,8 @@ bool Compiler::register_is_used_before(AsmRegister reg, uint32_t end_idx) {
          */
         case INSTRUCTION_DIV: {
             Argument a = inst.arguments.front();
-            if ((a.type == ARG_REGISTER && a.reg_value == reg) ||
-                (reg == REGISTER_RAX) || (reg == REGISTER_RDX))
+            if ((a.type == ARG_REGISTER && a.reg_value == reg) || (reg == REGISTER_RAX) ||
+                (reg == REGISTER_RDX))
                 return true;
         } break;
 
@@ -69,8 +67,7 @@ bool Compiler::register_is_used_before(AsmRegister reg, uint32_t end_idx) {
     return false;
 }
 
-bool Compiler::register_is_used_before_being_set_again(AsmRegister reg,
-                                                       uint32_t    start_idx) {
+bool Compiler::register_is_used_before_being_set_again(AsmRegister reg, uint32_t start_idx) {
     // true -> register value was used
     // false -> register was set again without being used
     for (uint32_t i = start_idx + 1; i < fn_key.second.size(); i++) {
@@ -105,8 +102,7 @@ bool Compiler::register_is_used_before_being_set_again(AsmRegister reg,
             // div uses rax, rbx and rdx
             // rbx is not changed, but rax and rdx are
             Argument arg = inst.arguments.front();
-            if (arg.type == ARG_REGISTER && arg.reg_value == reg)
-                return true;  // rbx
+            if (arg.type == ARG_REGISTER && arg.reg_value == reg) return true;  // rbx
             if (reg == REGISTER_RAX || reg == REGISTER_RDX) return false;
         } break;
 
@@ -114,7 +110,7 @@ bool Compiler::register_is_used_before_being_set_again(AsmRegister reg,
         case INSTRUCTION_ADD:
         case INSTRUCTION_SUB:
         case INSTRUCTION_IMUL:
-		case INSTRUCTION_CMP:
+        case INSTRUCTION_CMP:
         case INSTRUCTION_CMOVE:
         case INSTRUCTION_CMOVG:
         case INSTRUCTION_CMOVL:

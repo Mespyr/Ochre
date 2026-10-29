@@ -32,8 +32,7 @@ void Compiler::handle_stack_push_optim() {
 
     // check if pushing a register on the stack
     Argument arg = i.arguments.front();
-    if (arg.type != ARG_REGISTER || arg.read_pointer || arg.add_amount != 0)
-        return;
+    if (arg.type != ARG_REGISTER || arg.read_pointer || arg.add_amount != 0) return;
 
     AsmRegister push_reg = arg.reg_value;
 
@@ -60,7 +59,7 @@ void Compiler::handle_stack_push_optim() {
         return;
     }
 
-    fn_key.second.at(idx - 1) = asmp.inst_mov(prev_inst.arguments.front(),
-                                              Argument(REGISTER_RSP, true));
+    fn_key.second.at(idx - 1) =
+        asmp.inst_mov(prev_inst.arguments.front(), Argument(REGISTER_RSP, true));
     erase_idx(idx);
 }

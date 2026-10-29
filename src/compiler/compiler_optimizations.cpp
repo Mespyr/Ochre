@@ -9,8 +9,7 @@ void Compiler::optimize_func() {
         switch (i.type) {
         case INSTRUCTION_ADD:
         case INSTRUCTION_SUB: {
-            if (i.arguments.at(1).type == ARG_INTEGER &&
-                i.arguments.at(1).int_value == 0)
+            if (i.arguments.at(1).type == ARG_INTEGER && i.arguments.at(1).int_value == 0)
                 erase_idx(idx);
             else if (i.arguments.front().type == ARG_REGISTER &&
                      i.arguments.front().read_pointer == false)

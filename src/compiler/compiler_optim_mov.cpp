@@ -13,26 +13,22 @@ bool Compiler::check_mov_reg_args(Instruction i) {
     return true;
 }
 
-void Compiler::compare_stored_values_mov(Instruction i, AsmRegister write_reg,
-                                         int64_t save_value) {
+void Compiler::compare_stored_values_mov(Instruction i, AsmRegister write_reg, int64_t save_value) {
     if (stored_registers.count(write_reg)) {
         int64_t diff = save_value - stored_registers.at(write_reg);
         if (diff == 0)
             erase_idx(idx);
         else if (diff < 0)
-            fn_key.second.at(idx) =
-                asmp.inst_sub(i.arguments.front(), Argument(-diff));
+            fn_key.second.at(idx) = asmp.inst_sub(i.arguments.front(), Argument(-diff));
         else if (diff > 0)
-            fn_key.second.at(idx) =
-                asmp.inst_add(i.arguments.front(), Argument(diff));
+            fn_key.second.at(idx) = asmp.inst_add(i.arguments.front(), Argument(diff));
         stored_registers[write_reg] = save_value;
         return;
     } else
         stored_registers.insert({write_reg, save_value});
 
     if (save_value == 0)
-        fn_key.second.at(idx) =
-            asmp.inst_xor(i.arguments.front(), i.arguments.front());
+        fn_key.second.at(idx) = asmp.inst_xor(i.arguments.front(), i.arguments.front());
 }
 
 void Compiler::optimize_consecutive_movs(uint64_t mov_idx) {
@@ -56,23 +52,18 @@ void Compiler::optimize_consecutive_movs(uint64_t mov_idx) {
     Argument    set_register = instruction.arguments.at(0);
     Argument    read_register = instruction.arguments.at(1);
 
-    if (read_register.type != ARG_REGISTER || read_register.read_pointer)
-        return;
+    if (read_register.type != ARG_REGISTER || read_register.read_pointer) return;
 
     Instruction previous_instruction = fn_key.second.at(mov_idx - 1);
-    Argument previous_set_register = previous_instruction.arguments.at(0);
+    Argument    previous_set_register = previous_instruction.arguments.at(0);
 
     if (previous_instruction.type != INSTRUCTION_MOV) return;
-    if (previous_set_register.type != ARG_REGISTER || set_register.read_pointer)
-        return;
+    if (previous_set_register.type != ARG_REGISTER || set_register.read_pointer) return;
     if (previous_set_register.reg_value != read_register.reg_value) return;
 
-    if (register_is_used_before_being_set_again(read_register.reg_value,
-                                                mov_idx))
-        return;
+    if (register_is_used_before_being_set_again(read_register.reg_value, mov_idx)) return;
 
-    fn_key.second.at(mov_idx) =
-        asmp.inst_mov(set_register, previous_instruction.arguments.at(1));
+    fn_key.second.at(mov_idx) = asmp.inst_mov(set_register, previous_instruction.arguments.at(1));
     erase_idx(mov_idx - 1);
 }
 

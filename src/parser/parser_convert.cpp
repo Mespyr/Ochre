@@ -1,9 +1,8 @@
 #include "parser.h"
 
-Op Parser::convert_token_to_op(
-    Token tok, std::map<std::string, std::pair<LangType, int>> var_offsets) {
-    static_assert(OP_COUNT == 61,
-                  "unhandled op types in Parser::convert_token_to_op()");
+Op Parser::convert_token_to_op(Token                                           tok,
+                               std::map<std::string, std::pair<LangType, int>> var_offsets) {
+    static_assert(OP_COUNT == 61, "unhandled op types in Parser::convert_token_to_op()");
 
     if (tok.type == TOKEN_WORD) {
         if (tok.value == "dump") return Op(tok.loc, OP_DUMP);
@@ -93,34 +92,29 @@ Op Parser::convert_token_to_op(
         else if (tok.value.front() == '<' && tok.value.back() == '>') {
             std::string push_struct_name =
                 parse_type_str(tok.value.substr(1, tok.value.size() - 2)).first;
-            if (program.structs.count(push_struct_name) ||
-                is_prim_type(push_struct_name)) {
+            if (program.structs.count(push_struct_name) || is_prim_type(push_struct_name)) {
                 return Op(tok.loc, OP_PUSH_TYPE_INSTANCE, 1, push_struct_name);
             }
             uint64_t colon_pos = push_struct_name.find(':');
             // no chance to be an array
             if (colon_pos == std::string::npos) {
-                print_error_at_loc(
-                    tok.loc, "unknown type in 'push type instance' (<...>), '" +
-                                 push_struct_name + "'");
+                print_error_at_loc(tok.loc, "unknown type in 'push type instance' (<...>), '" +
+                                                push_struct_name + "'");
                 exit(1);
             }
 
             // we know there is a colon somewhere, might be an array
-            std::string new_push_struct_name =
-                push_struct_name.substr(0, colon_pos);
+            std::string new_push_struct_name = push_struct_name.substr(0, colon_pos);
             std::string amount = push_struct_name.substr(colon_pos + 1);
             if (!program.structs.count(new_push_struct_name) &&
                 !is_prim_type(new_push_struct_name)) {
-                print_error_at_loc(
-                    tok.loc, "unknown type in 'push type instance' (<...>), '" +
-                                 new_push_struct_name + "'");
+                print_error_at_loc(tok.loc, "unknown type in 'push type instance' (<...>), '" +
+                                                new_push_struct_name + "'");
                 exit(1);
             }
             // if the value is a constant
             if (program.consts.count(amount))
-                return Op(tok.loc, OP_PUSH_TYPE_INSTANCE,
-                          program.consts.at(amount).value,
+                return Op(tok.loc, OP_PUSH_TYPE_INSTANCE, program.consts.at(amount).value,
                           new_push_struct_name);
             // if the value is a number
             if (lexer->is_number(amount)) {
@@ -148,8 +142,7 @@ Op Parser::convert_token_to_op(
                                    "since those cannot exist on the stack");
                 exit(1);
 
-            } else if (is_prim_type(type.first) ||
-                       program.structs.count(type.first))
+            } else if (is_prim_type(type.first) || program.structs.count(type.first))
                 // if the struct is a primitive type or a struct pointer
                 return Op(tok.loc, OP_TYPE_CAST, full_type_str);
             else {
@@ -165,8 +158,7 @@ Op Parser::convert_token_to_op(
         // OP_LABEL
         else if (tok.value.back() == ':') {
             if (tok.value.size() == 1) {
-                print_error_at_loc(tok.loc,
-                                   "unexpected ':' char found while parsing");
+                print_error_at_loc(tok.loc, "unexpected ':' char found while parsing");
                 exit(1);
             }
             tok.value.pop_back();
@@ -175,8 +167,7 @@ Op Parser::convert_token_to_op(
         // OP_SET
         else if (tok.value.front() == '@') {
             if (tok.value.size() == 1) {
-                print_error_at_loc(tok.loc,
-                                   "unexpected '@' char found while parsing");
+                print_error_at_loc(tok.loc, "unexpected '@' char found while parsing");
                 exit(1);
             }
             return Op(tok.loc, OP_SET, tok.value.substr(1));
@@ -184,8 +175,7 @@ Op Parser::convert_token_to_op(
         // OP_READ
         else if (tok.value.front() == '&') {
             if (tok.value.size() == 1) {
-                print_error_at_loc(tok.loc,
-                                   "unexpected '&' char found while parsing");
+                print_error_at_loc(tok.loc, "unexpected '&' char found while parsing");
                 exit(1);
             }
             return Op(tok.loc, OP_READ, tok.value.substr(1));
@@ -199,10 +189,8 @@ Op Parser::convert_token_to_op(
         else if (var_offsets.count(tok.value))
             return Op(tok.loc, OP_PUSH_VAR, tok.value);
 
-        else if (tok.value == "[" || tok.value == "]" || tok.value == "(" ||
-                 tok.value == ")") {
-            print_error_at_loc(tok.loc, "unexpected '" + tok.value +
-                                            "' char found while parsing");
+        else if (tok.value == "[" || tok.value == "]" || tok.value == "(" || tok.value == ")") {
+            print_error_at_loc(tok.loc, "unexpected '" + tok.value + "' char found while parsing");
             exit(1);
         }
     } else if (tok.type == TOKEN_INT)
@@ -213,8 +201,8 @@ Op Parser::convert_token_to_op(
         if (tok.value.length() > 3) {
             std::string raw = parse_single_escape_sequence(val);
             if (raw.empty()) {
-                print_error_at_loc(tok.loc, "unexpected '" + tok.value +
-                                                "' char found while parsing");
+                print_error_at_loc(tok.loc,
+                                   "unexpected '" + tok.value + "' char found while parsing");
                 exit(1);
             }
             val = raw;
@@ -228,9 +216,8 @@ Op Parser::convert_token_to_op(
         }
         return Op(tok.loc, OP_PUSH_CHAR, val.at(0), val);
     } else if (tok.type == TOKEN_STRING)
-        return Op(
-            tok.loc, OP_PUSH_STR,
-            add_escapes_to_string(tok.value.substr(1, tok.value.length() - 2)));
+        return Op(tok.loc, OP_PUSH_STR,
+                  add_escapes_to_string(tok.value.substr(1, tok.value.length() - 2)));
 
     print_error_at_loc(tok.loc, "unknown word '" + tok.value + "'");
     exit(1);

@@ -15,24 +15,21 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
     case OP_PLUS: {
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RBX)));
-        asmp.new_inst(
-            asmp.inst_add(Argument(REGISTER_RBX), Argument(REGISTER_RAX)));
+        asmp.new_inst(asmp.inst_add(Argument(REGISTER_RBX), Argument(REGISTER_RAX)));
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RBX)));
     } break;
 
     case OP_MINUS: {
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RBX)));
-        asmp.new_inst(
-            asmp.inst_sub(Argument(REGISTER_RBX), Argument(REGISTER_RAX)));
+        asmp.new_inst(asmp.inst_sub(Argument(REGISTER_RBX), Argument(REGISTER_RAX)));
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RBX)));
     } break;
 
     case OP_MUL: {
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RBX)));
-        asmp.new_inst(
-            asmp.inst_imul(Argument(REGISTER_RAX), Argument(REGISTER_RBX)));
+        asmp.new_inst(asmp.inst_imul(Argument(REGISTER_RAX), Argument(REGISTER_RBX)));
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RAX)));
     } break;
 
@@ -50,10 +47,8 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RDX), Argument(1)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RBX)));
-        asmp.new_inst(
-            asmp.inst_cmp(Argument(REGISTER_RAX), Argument(REGISTER_RBX)));
-        asmp.new_inst(
-            asmp.inst_cmove(Argument(REGISTER_RCX), Argument(REGISTER_RDX)));
+        asmp.new_inst(asmp.inst_cmp(Argument(REGISTER_RAX), Argument(REGISTER_RBX)));
+        asmp.new_inst(asmp.inst_cmove(Argument(REGISTER_RCX), Argument(REGISTER_RDX)));
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RCX)));
     } break;
 
@@ -62,10 +57,8 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RDX), Argument(1)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RBX)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
-        asmp.new_inst(
-            asmp.inst_cmp(Argument(REGISTER_RAX), Argument(REGISTER_RBX)));
-        asmp.new_inst(
-            asmp.inst_cmovg(Argument(REGISTER_RCX), Argument(REGISTER_RDX)));
+        asmp.new_inst(asmp.inst_cmp(Argument(REGISTER_RAX), Argument(REGISTER_RBX)));
+        asmp.new_inst(asmp.inst_cmovg(Argument(REGISTER_RCX), Argument(REGISTER_RDX)));
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RCX)));
     } break;
 
@@ -74,10 +67,8 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RDX), Argument(1)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RBX)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
-        asmp.new_inst(
-            asmp.inst_cmp(Argument(REGISTER_RAX), Argument(REGISTER_RBX)));
-        asmp.new_inst(
-            asmp.inst_cmovl(Argument(REGISTER_RCX), Argument(REGISTER_RDX)));
+        asmp.new_inst(asmp.inst_cmp(Argument(REGISTER_RAX), Argument(REGISTER_RBX)));
+        asmp.new_inst(asmp.inst_cmovl(Argument(REGISTER_RCX), Argument(REGISTER_RDX)));
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RCX)));
     } break;
 
@@ -86,10 +77,8 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RDX), Argument(1)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RBX)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
-        asmp.new_inst(
-            asmp.inst_cmp(Argument(REGISTER_RAX), Argument(REGISTER_RBX)));
-        asmp.new_inst(
-            asmp.inst_cmovge(Argument(REGISTER_RCX), Argument(REGISTER_RDX)));
+        asmp.new_inst(asmp.inst_cmp(Argument(REGISTER_RAX), Argument(REGISTER_RBX)));
+        asmp.new_inst(asmp.inst_cmovge(Argument(REGISTER_RCX), Argument(REGISTER_RDX)));
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RCX)));
     } break;
 
@@ -98,10 +87,8 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RDX), Argument(1)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RBX)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
-        asmp.new_inst(
-            asmp.inst_cmp(Argument(REGISTER_RAX), Argument(REGISTER_RBX)));
-        asmp.new_inst(
-            asmp.inst_cmovle(Argument(REGISTER_RCX), Argument(REGISTER_RDX)));
+        asmp.new_inst(asmp.inst_cmp(Argument(REGISTER_RAX), Argument(REGISTER_RBX)));
+        asmp.new_inst(asmp.inst_cmovle(Argument(REGISTER_RCX), Argument(REGISTER_RDX)));
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RCX)));
     } break;
 
@@ -110,26 +97,22 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RDX), Argument(1)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RBX)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
-        asmp.new_inst(
-            asmp.inst_cmp(Argument(REGISTER_RAX), Argument(REGISTER_RBX)));
-        asmp.new_inst(
-            asmp.inst_cmovne(Argument(REGISTER_RCX), Argument(REGISTER_RDX)));
+        asmp.new_inst(asmp.inst_cmp(Argument(REGISTER_RAX), Argument(REGISTER_RBX)));
+        asmp.new_inst(asmp.inst_cmovne(Argument(REGISTER_RCX), Argument(REGISTER_RDX)));
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RCX)));
     } break;
 
     case OP_AND: {
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RBX)));
-        asmp.new_inst(
-            asmp.inst_and(Argument(REGISTER_RBX), Argument(REGISTER_RAX)));
+        asmp.new_inst(asmp.inst_and(Argument(REGISTER_RBX), Argument(REGISTER_RAX)));
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RBX)));
     } break;
 
     case OP_OR: {
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RBX)));
-        asmp.new_inst(
-            asmp.inst_or(Argument(REGISTER_RBX), Argument(REGISTER_RAX)));
+        asmp.new_inst(asmp.inst_or(Argument(REGISTER_RBX), Argument(REGISTER_RAX)));
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RBX)));
     } break;
 
@@ -170,36 +153,28 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
     case OP_SET_VAR:
     case OP_SET_VAR_STRUCT_MEMBER: {
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RBX)));
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX),
-                                    Argument("ret_stack_rsp", true)));
-        asmp.new_inst(
-            asmp.inst_add(Argument(REGISTER_RAX), Argument(op.int_operand)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX), Argument("ret_stack_rsp", true)));
+        asmp.new_inst(asmp.inst_add(Argument(REGISTER_RAX), Argument(op.int_operand)));
         handle_write_data_to_ptr(op);
     } break;
 
     case OP_SET_VAR_FROM_OTHER_PTR: {
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RBX)));
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX),
-                                    Argument("ret_stack_rsp", true)));
-        asmp.new_inst(
-            asmp.inst_add(Argument(REGISTER_RAX), Argument(op.int_operand)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX), Argument("ret_stack_rsp", true)));
+        asmp.new_inst(asmp.inst_add(Argument(REGISTER_RAX), Argument(op.int_operand)));
         handle_copy_ptr_to_ptr(op);
     } break;
 
     case OP_READ_VAR:
     case OP_READ_VAR_STRUCT_MEMBER: {
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX),
-                                    Argument("ret_stack_rsp", true)));
-        asmp.new_inst(
-            asmp.inst_add(Argument(REGISTER_RAX), Argument(op.int_operand)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX), Argument("ret_stack_rsp", true)));
+        asmp.new_inst(asmp.inst_add(Argument(REGISTER_RAX), Argument(op.int_operand)));
         handle_read_data_from_ptr(op);
     } break;
 
     case OP_PUSH_VAR: {
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX),
-                                    Argument("ret_stack_rsp", true)));
-        asmp.new_inst(
-            asmp.inst_add(Argument(REGISTER_RAX), Argument(op.int_operand)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX), Argument("ret_stack_rsp", true)));
+        asmp.new_inst(asmp.inst_add(Argument(REGISTER_RAX), Argument(op.int_operand)));
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RAX)));
     } break;
 
@@ -217,8 +192,7 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
 
     case OP_SET_PTR_STRUCT_MEMBER: {
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
-        asmp.new_inst(
-            asmp.inst_add(Argument(REGISTER_RAX), Argument(op.int_operand)));
+        asmp.new_inst(asmp.inst_add(Argument(REGISTER_RAX), Argument(op.int_operand)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RBX)));
         handle_write_data_to_ptr(op);
     } break;
@@ -231,8 +205,7 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
 
     case OP_READ_PTR_STRUCT_MEMBER: {
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
-        asmp.new_inst(
-            asmp.inst_add(Argument(REGISTER_RAX), Argument(op.int_operand)));
+        asmp.new_inst(asmp.inst_add(Argument(REGISTER_RAX), Argument(op.int_operand)));
         handle_read_data_from_ptr(op);
     } break;
 
@@ -295,8 +268,8 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
 
     case OP_LABEL:
     case OP_LABEL_END:
-        asmp.new_inst(asmp.inst_label("addr_" + std::to_string(func_addr) +
-                                      "_" + std::to_string(op.int_operand)));
+        asmp.new_inst(asmp.inst_label("addr_" + std::to_string(func_addr) + "_" +
+                                      std::to_string(op.int_operand)));
         break;
 
     case OP_JMP:
@@ -308,8 +281,7 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
     case OP_CJMPT:
     case OP_CJMPET: {
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
-        asmp.new_inst(
-            asmp.inst_test(Argument(REGISTER_RAX), Argument(REGISTER_RAX)));
+        asmp.new_inst(asmp.inst_test(Argument(REGISTER_RAX), Argument(REGISTER_RAX)));
         asmp.new_inst(asmp.inst_jnz("addr_" + std::to_string(func_addr) + "_" +
                                     std::to_string(op.int_operand)));
     } break;
@@ -317,49 +289,41 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
     case OP_CJMPF:
     case OP_CJMPEF: {
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
-        asmp.new_inst(
-            asmp.inst_test(Argument(REGISTER_RAX), Argument(REGISTER_RAX)));
+        asmp.new_inst(asmp.inst_test(Argument(REGISTER_RAX), Argument(REGISTER_RAX)));
         asmp.new_inst(asmp.inst_jz("addr_" + std::to_string(func_addr) + "_" +
                                    std::to_string(op.int_operand)));
     } break;
 
     case OP_PUSH_INT: {
-        asmp.new_inst(
-            asmp.inst_mov(Argument(REGISTER_RAX), Argument(op.int_operand)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX), Argument(op.int_operand)));
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RAX)));
     } break;
 
     case OP_PUSH_CHAR: {
-        asmp.new_inst(
-            asmp.inst_mov(Argument(REGISTER_RAX), Argument(op.int_operand)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX), Argument(op.int_operand)));
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RAX)));
     } break;
 
     case OP_PUSH_STR: {
         asmp.string_data.push_back(op.str_operand);
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX),
-                                    Argument(op.str_operand.length())));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX), Argument(op.str_operand.length())));
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RAX)));
-        asmp.new_inst(asmp.inst_push(
-            Argument("str_" + std::to_string(asmp.string_data.size() - 1))));
+        asmp.new_inst(
+            asmp.inst_push(Argument("str_" + std::to_string(asmp.string_data.size() - 1))));
     } break;
 
     case OP_PUSH_ARGV: {
-        asmp.new_inst(
-            asmp.inst_mov(Argument(REGISTER_RAX), Argument("args_ptr", true)));
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RBX),
-                                    Argument(REGISTER_RAX, true)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX), Argument("args_ptr", true)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RBX), Argument(REGISTER_RAX, true)));
         asmp.new_inst(asmp.inst_add(Argument(REGISTER_RAX), Argument(8)));
-        asmp.new_inst(
-            asmp.inst_push(Argument(REGISTER_RBX)));  // the length of argv
+        asmp.new_inst(asmp.inst_push(Argument(REGISTER_RBX)));  // the length of argv
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RAX)));  // argv itself
     } break;
 
     case OP_PUSH_TYPE_INSTANCE: {
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX), Argument(9)));
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RDI), Argument(0)));
-        asmp.new_inst(
-            asmp.inst_mov(Argument(REGISTER_RSI), Argument(op.int_operand)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RSI), Argument(op.int_operand)));
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RDX), Argument(3)));
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_R10), Argument(33)));
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_R8), Argument(-1)));
@@ -371,30 +335,23 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
     case OP_DELETE_PTR: {
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX), Argument(11)));
         asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RDI)));
-        asmp.new_inst(
-            asmp.inst_mov(Argument(REGISTER_RSI), Argument(op.int_operand)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RSI), Argument(op.int_operand)));
         asmp.new_inst(asmp.inst_syscall());
     } break;
 
     case OP_TYPE_CAST: break;  // nothing needed to do!
 
     case OP_FUNCTION_CALL: {
-        asmp.new_inst(
-            asmp.inst_mov(Argument(REGISTER_RAX), Argument(REGISTER_RSP)));
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RSP),
-                                    Argument("ret_stack_rsp", true)));
-        asmp.new_inst(asmp.inst_call(
-            "func_addr_" +
-            std::to_string(program.functions.at(op.str_operand).addr)));
-        asmp.new_inst(asmp.inst_mov(Argument("ret_stack_rsp", true),
-                                    Argument(REGISTER_RSP)));
-        asmp.new_inst(
-            asmp.inst_mov(Argument(REGISTER_RSP), Argument(REGISTER_RAX)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX), Argument(REGISTER_RSP)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RSP), Argument("ret_stack_rsp", true)));
+        asmp.new_inst(asmp.inst_call("func_addr_" +
+                                     std::to_string(program.functions.at(op.str_operand).addr)));
+        asmp.new_inst(asmp.inst_mov(Argument("ret_stack_rsp", true), Argument(REGISTER_RSP)));
+        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RSP), Argument(REGISTER_RAX)));
     } break;
 
     case OP_RETURN:
-        asmp.new_inst(
-            asmp.inst_jmp("addr_" + std::to_string(func_addr) + "_return"));
+        asmp.new_inst(asmp.inst_jmp("addr_" + std::to_string(func_addr) + "_return"));
         break;
 
     case OP_CONST:
@@ -406,9 +363,8 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
     case OP_SET:
     case OP_STRUCT:
     case OP_COUNT:
-        print_error_at_loc(
-            op.loc, "compiler error! this opcode (" + std::to_string(op.type) +
-                        ") shouldn't be passed into compiling stage");
+        print_error_at_loc(op.loc, "compiler error! this opcode (" + std::to_string(op.type) +
+                                       ") shouldn't be passed into compiling stage");
         exit(1);
     }
 }

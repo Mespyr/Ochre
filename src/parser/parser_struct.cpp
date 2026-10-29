@@ -4,9 +4,7 @@ void Parser::parse_struct(Op current_op) {
     i++;
     // check if struct name is in the tokens stream
     if (i >= tokens.size()) {
-        print_error_at_loc(
-            current_op.loc,
-            "unexpected EOF found while parsing struct definition");
+        print_error_at_loc(current_op.loc, "unexpected EOF found while parsing struct definition");
         exit(1);
     }
 
@@ -18,22 +16,18 @@ void Parser::parse_struct(Op current_op) {
         print_error_at_loc(name_token.loc, "illegal name for struct");
         exit(1);
     } else if (program.functions.count(struct_name)) {
-        print_error_at_loc(
-            name_token.loc,
-            "name '" + struct_name + "' already exists as a function");
+        print_error_at_loc(name_token.loc,
+                           "name '" + struct_name + "' already exists as a function");
         exit(1);
     } else if (program.structs.count(struct_name)) {
-        print_error_at_loc(name_token.loc,
-                           "struct '" + struct_name + "' already exists");
+        print_error_at_loc(name_token.loc, "struct '" + struct_name + "' already exists");
         exit(1);
     }
     i++;
 
     // check if eof before parsing members of struct
     if (i >= tokens.size()) {
-        print_error_at_loc(
-            current_op.loc,
-            "unexpected EOF found while parsing struct definition");
+        print_error_at_loc(current_op.loc, "unexpected EOF found while parsing struct definition");
         exit(1);
     }
 
@@ -52,32 +46,27 @@ void Parser::parse_struct(Op current_op) {
             if (base_type == struct_name && pointer_count > 0)
                 ;
             else {
-                print_error_at_loc(
-                    type_tok.loc,
-                    "unknown type '" + type_tok.value +
-                        "' found while parsing struct definition");
+                print_error_at_loc(type_tok.loc, "unknown type '" + type_tok.value +
+                                                     "' found while parsing struct definition");
                 exit(1);
             }
         }
         // get member name
         i++;
         if (i > tokens.size() - 1) {
-            print_error_at_loc(
-                type_tok.loc,
-                "unexpected EOF found while parsing struct member definition");
+            print_error_at_loc(type_tok.loc,
+                               "unexpected EOF found while parsing struct member definition");
             exit(1);
         }
         Token member_name_tok = tokens.at(i);
         if (!is_legal_name(member_name_tok)) {
-            print_error_at_loc(member_name_tok.loc,
-                               "illegal name for struct member");
+            print_error_at_loc(member_name_tok.loc, "illegal name for struct member");
             exit(1);
         }
 
         // set variable type and relative offset
         members.insert(
-            {member_name_tok.value,
-             {LangType(member_name_tok.loc, type_tok.value), offset}});
+            {member_name_tok.value, {LangType(member_name_tok.loc, type_tok.value), offset}});
 
         // increase offset by size of type
         if (pointer_count > 0)
@@ -93,6 +82,5 @@ void Parser::parse_struct(Op current_op) {
         }
     }
     // align the offset into sections of 8
-    program.structs.insert(
-        {struct_name, Struct(current_op.loc, members, (offset + 7) / 8 * 8)});
+    program.structs.insert({struct_name, Struct(current_op.loc, members, (offset + 7) / 8 * 8)});
 }
