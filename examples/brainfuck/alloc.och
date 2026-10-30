@@ -1,0 +1,7 @@
+struct Memory
+  Int data_raw
+
+fun alloc(Int) [^Memory]
+  Int size @size
+  0 -1 33 3 &size 0 9 call6
+  cast:^Memory

@@ -1,0 +1,7 @@
+struct String
+  Int size
+  ^Char data
+
+fun String.new(Int ^Char) [^String]
+  <String> swp over @String.data
+  swp over @String.size

@@ -1,0 +1,78 @@
+import "tape.och"
+import "string.och"
+
+fun find_matching_start_bracket(^String Int) [Int]
+  0 Int depth @depth
+  swp ^String program @program
+  loop:
+    1 -
+    &program &String.data over get_char_at_idx
+	'[' = cjmpet loop
+	jmp loop
+  end
+    
+fun find_matching_end_bracket(^String Int) [Int]
+  0 Int depth @depth
+  swp ^String program @program
+  loop:
+    1 +
+    &program &String.data over get_char_at_idx
+	']' = cjmpet loop
+	jmp loop
+  end
+
+fun run_program(^Tape ^String) [^Tape ^String]
+  ^String program @program
+  ^Tape tape @tape
+  
+  0 Int idx @idx
+  loop:
+    &idx &program &String.size >= cjmpet loop
+	&program &String.data &idx get_char_at_idx
+
+    dup '+' = cjmpef handle_plus
+	handle_plus:
+	  &tape Tape.plus
+	end
+
+    dup '-' = cjmpef handle_minus
+	handle_minus:
+	  &tape Tape.minus
+	end
+
+    dup '>' = cjmpef handle_shift_right
+	handle_shift_right:
+	  &tape Tape.shift_right
+	end
+
+    dup '<' = cjmpef handle_shift_left
+	handle_shift_left:
+	  &tape Tape.shift_left
+	end
+
+    dup '.' = cjmpef handle_print
+	handle_print:
+	  &tape Tape.print
+	end
+
+    dup '[' = cjmpef handle_start_loop
+	handle_start_loop:
+	  &tape Tape.get 0 = cjmpef handle_start_loop
+	  &program &idx find_matching_end_bracket @idx
+	end
+
+    dup ']' = cjmpef handle_end_loop
+	handle_end_loop:
+	  &tape Tape.get 0 != cjmpef handle_end_loop
+	  &program &idx find_matching_start_bracket @idx
+	end
+    
+    &idx 1 + @idx
+	pop jmp loop
+  end
+  &tape &program
+
+fun main()
+  300 Tape.new
+  "-[------->+<]>-.-[->+++++<]>++.+++++++..+++.[--->+<]>-----.---[->+++<]>.-[--->+<]>---.+++.------.--------.-[--->+<]>.[--->+<]>-."
+  String.new run_program delete delete

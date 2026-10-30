@@ -1,0 +1,4 @@
+fun modulo(Int Int) [Int] / swp pop
+
+fun get_char_at_idx(^Char Int) [Char]
+  swp cast:Int + cast:^Char &Char
