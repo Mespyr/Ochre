@@ -1,5 +1,3 @@
-
-
 import "alloc.och"
 import "util.och"
 
@@ -15,6 +13,10 @@ fun Tape.new(Int) [^Tape]
   dup 0 swp @Tape.feed_ptr
   dup &size swp @Tape.size
 
+fun Tape.get(^Tape) [Int]
+  dup &Tape.feed swp &Tape.feed_ptr 8 *
+  swp cast:Int + cast:^Int &Int
+
 fun Tape.plus(^Tape)
   dup &Tape.feed swp &Tape.feed_ptr 8 *
   swp cast:Int + cast:^Int
@@ -25,22 +27,12 @@ fun Tape.minus(^Tape)
   swp cast:Int + cast:^Int
   dup &Int 1 - 256 modulo swp @Int
 
-fun Tape.shift_right(^Tape)
-  dup &Tape.feed_ptr 1 +
-  over &Tape.size modulo swp @Tape.feed_ptr
-
-fun Tape.shift_left(^Tape)
-  dup &Tape.feed_ptr 1 -
+fun Tape.shift_by(Int ^Tape)
+  swp over &Tape.feed_ptr +
   over &Tape.size modulo swp @Tape.feed_ptr
 
 fun Tape.print(^Tape)
-  dup &Tape.feed swp &Tape.feed_ptr 8 *
-  swp cast:Int + cast:^Int
-  Char x
-  &Int cast:Char @x
+  Tape.get cast:Char
+  Char x @x
   1 x 1 1 call3 pop
-
-fun Tape.get(^Tape) [Int]
-  dup &Tape.feed swp &Tape.feed_ptr 8 *
-  swp cast:Int + cast:^Int &Int
 

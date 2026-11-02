@@ -53,7 +53,6 @@ void Compiler::handle_stack_push_optim() {
       - or if it even occurs in the generated code
      */
     if (!register_is_used_before_being_set_again(push_reg, idx)) {
-        std::cout << "Holy Shit it happened" << std::endl;
         erase_idx(idx);
         erase_idx(idx);
         return;

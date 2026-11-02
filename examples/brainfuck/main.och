@@ -42,12 +42,12 @@ fun run_program(^Tape ^String) [^Tape ^String]
 
     dup '>' = cjmpef handle_shift_right
 	handle_shift_right:
-	  &tape Tape.shift_right
+	  1 &tape Tape.shift_by
 	end
 
     dup '<' = cjmpef handle_shift_left
 	handle_shift_left:
-	  &tape Tape.shift_left
+	  -1 &tape Tape.shift_by
 	end
 
     dup '.' = cjmpef handle_print
