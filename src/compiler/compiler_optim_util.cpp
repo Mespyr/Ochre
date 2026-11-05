@@ -7,9 +7,11 @@ void Compiler::erase_idx(uint32_t i) {
     idx--;
 }
 
+void Compiler::set_idx(uint32_t i, Instruction inst) {
+    fn_key.second.at(i) = inst;
+}
+
 void Compiler::remove_stored_register(AsmRegister reg) {
-    // std::cout << "CLEAR " << register_to_string(reg) << ": " <<
-    // fn_key.second.at(idx).to_string() << " | " << fn_key.first << std::endl;
     for (auto it = stored_registers.begin(); it != stored_registers.end();)
         if (it->first == reg)
             it = stored_registers.erase(it);

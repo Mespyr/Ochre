@@ -44,6 +44,7 @@ private:
 
 	bool arguments_equal(Argument a, Argument b);
 	void erase_idx(uint32_t i);
+	void set_idx(uint32_t i, Instruction inst);
 	void remove_stored_register(AsmRegister reg);
 
 	Program program;
