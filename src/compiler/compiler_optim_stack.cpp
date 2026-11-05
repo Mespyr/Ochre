@@ -23,7 +23,7 @@ void Compiler::handle_stack_pop_optim() {
     }
 
     // since push_idx < idx, we don't need to decrement it with an erasure
-	set_idx(push_idx, asmp.inst_mov(set_arg, pushed_arg));
+    set_idx(push_idx, asmp.inst_mov(set_arg, pushed_arg));
     erase_idx(idx);
 }
 
@@ -58,6 +58,6 @@ void Compiler::handle_stack_push_optim() {
         return;
     }
 
-	set_idx(idx - 1, asmp.inst_mov(prev_inst.arguments.front(), Argument(REGISTER_RSP, true)));
+    set_idx(idx - 1, asmp.inst_mov(prev_inst.arguments.front(), Argument(REGISTER_RSP, true)));
     erase_idx(idx);
 }

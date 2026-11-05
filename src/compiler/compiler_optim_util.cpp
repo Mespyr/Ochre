@@ -2,13 +2,17 @@
 
 bool Compiler::arguments_equal(Argument a, Argument b) { return a.to_string() == b.to_string(); }
 
+bool Compiler::changes_made() { return number_of_changes > 0; }
+
 void Compiler::erase_idx(uint32_t i) {
     fn_key.second.erase(fn_key.second.begin() + i);
     idx--;
+    number_of_changes++;
 }
 
 void Compiler::set_idx(uint32_t i, Instruction inst) {
     fn_key.second.at(i) = inst;
+    number_of_changes++;
 }
 
 void Compiler::remove_stored_register(AsmRegister reg) {

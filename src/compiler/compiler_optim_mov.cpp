@@ -19,16 +19,15 @@ void Compiler::compare_stored_values_mov(Instruction i, AsmRegister write_reg, i
         if (diff == 0)
             erase_idx(idx);
         else if (diff < 0)
-			set_idx(idx, asmp.inst_sub(i.arguments.front(), Argument(-diff)));
+            set_idx(idx, asmp.inst_sub(i.arguments.front(), Argument(-diff)));
         else if (diff > 0)
-			set_idx(idx, asmp.inst_add(i.arguments.front(), Argument(diff)));
+            set_idx(idx, asmp.inst_add(i.arguments.front(), Argument(diff)));
         stored_registers[write_reg] = save_value;
         return;
     } else
         stored_registers.insert({write_reg, save_value});
 
-    if (save_value == 0)
-		set_idx(idx, asmp.inst_xor(i.arguments.front(), i.arguments.front()));
+    if (save_value == 0) set_idx(idx, asmp.inst_xor(i.arguments.front(), i.arguments.front()));
 }
 
 void Compiler::optimize_consecutive_movs(uint64_t mov_idx) {
@@ -63,7 +62,7 @@ void Compiler::optimize_consecutive_movs(uint64_t mov_idx) {
 
     if (register_is_used_before_being_set_again(read_register.reg_value, mov_idx)) return;
 
-	set_idx(mov_idx, asmp.inst_mov(set_register, previous_instruction.arguments.at(1)));
+    set_idx(mov_idx, asmp.inst_mov(set_register, previous_instruction.arguments.at(1)));
     erase_idx(mov_idx - 1);
 }
 

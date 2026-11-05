@@ -48,6 +48,7 @@ void Compiler::optimize_func() {
 }
 
 void Compiler::perform_optimizations() {
+    number_of_changes = 0;  // reset number of changes for current pass
     for (auto key : asmp.code) {
         fn_key = key;
         optimize_func();
