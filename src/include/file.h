@@ -4,21 +4,20 @@
 #include <string>
 #include <iostream>
 
-enum FILE_MODE {
-	FILE_READ,
-	FILE_WRITE
+enum class FileMode {
+	READ,
+	WRITE
 };
 
 class File {
 public:
-	File(std::string filename, FILE_MODE mode);
+	File(std::string filename, FileMode mode);
 	~File();
 	bool operator==(bool t);
 
-	void writeln(std::string buf);
-	std::string read();
-	std::string readline();
 	bool exists();
+	void writeln(std::string buf);
+	std::string readln();
 private:
 	std::fstream file;
 };

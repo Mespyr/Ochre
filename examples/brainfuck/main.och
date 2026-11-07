@@ -7,7 +7,13 @@ fun find_matching_start_bracket(^String Int) [Int]
   loop:
     1 -
     &program &String.data over get_char_at_idx
-	'[' = cjmpet loop
+	dup ']' = cjmpef inc_depth
+	inc_depth: &depth 1 + @depth end
+	'[' = cjmpef dec_depth
+	dec_depth:
+	  &depth 0 = cjmpet loop
+	  &depth 1 - @depth
+	end
 	jmp loop
   end
     
@@ -17,7 +23,13 @@ fun find_matching_end_bracket(^String Int) [Int]
   loop:
     1 +
     &program &String.data over get_char_at_idx
-	']' = cjmpet loop
+	dup '[' = cjmpef inc_depth
+	inc_depth: &depth 1 + @depth end
+	']' = cjmpef dec_depth
+	dec_depth:
+	  &depth 0 = cjmpet loop
+	  &depth 1 - @depth
+	end
 	jmp loop
   end
 
@@ -55,6 +67,11 @@ fun run_program(^Tape ^String) [^Tape ^String]
 	  &tape Tape.print
 	end
 
+    dup ',' = cjmpef handle_read
+	handle_read:
+	  &tape Tape.read 
+	end
+
     dup '[' = cjmpef handle_start_loop
 	handle_start_loop:
 	  &tape Tape.get 0 = cjmpef handle_start_loop
@@ -73,6 +90,7 @@ fun run_program(^Tape ^String) [^Tape ^String]
   &tape &program
 
 fun main()
-  300 Tape.new
-  "-[------->+<]>-.-[->+++++<]>++.+++++++..+++.[--->+<]>-----.---[->+++<]>.-[--->+<]>---.+++.------.--------.-[--->+<]>.[--->+<]>-."
+  30000 Tape.new
+  "++++[>+++++<-]>[<+++++>-]+<+[>[>+>+<<-]++>>[<<+>>-]>>>[-]++>[-]+>>>+[[-]++++++>>>]<<<[[<++++++++<++>>-]+<.<[>----<-]<]<<[>>>>>[>>>[-]+++++++++<[>-<-]+++++++++>[-[<->-]+[<<<]]<[>+<-]>]<<-]<<-]"
+
   String.new run_program delete delete

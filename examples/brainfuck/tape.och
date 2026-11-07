@@ -36,3 +36,9 @@ fun Tape.print(^Tape)
   Char x @x
   1 x 1 1 call3 pop
 
+fun Tape.read(^Tape)
+  dup &Tape.feed swp &Tape.feed_ptr 8 *
+  swp cast:Int + cast:^Int
+  Char c
+  1 c 0 0 call3 pop
+  &c cast:Int swp @Int

@@ -42,7 +42,7 @@ void AssemblyProgram::write_beginning_boilerplate(File* outfile) {
 }
 
 void AssemblyProgram::write_to_file(std::string filename) {
-    File outfile(filename, FILE_WRITE);
+    File outfile(filename, FileMode::WRITE);
 
     // start code segment
     write_beginning_boilerplate(&outfile);
