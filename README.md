@@ -23,7 +23,7 @@ It draws inspiration from Assembly, modernizing and pruning its features for use
 ### Prerequisites
 
 Ensure you have the following installed on your Linux system:
-*   A C++ compiler (configured for `clang++` by default)
+*   A C++23-compatible compiler (configured for `clang++` by default)
 *   [GNU Make](https://www.gnu.org/software/make/)
 *   [Flat Assembler 1 (FASM)](https://flatassembler.net/)
 

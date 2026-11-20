@@ -4,7 +4,7 @@ CPP=clang++
 PREFIX = /usr/local
 BINDIR = $(PREFIX)/bin
 
-CPPFLAGS=-DOCHRE_VERSION=\"$(VERSION)\" -Wall -Wextra -pedantic
+CPPFLAGS=-DOCHRE_VERSION=\"$(VERSION)\" -Wall -Wextra -pedantic -std=c++23
 LDFLAGS=
 
 SRC_DIRS=src src/lexer src/parser src/type_checker src/compiler src/assembly src/include
