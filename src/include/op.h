@@ -30,6 +30,7 @@ enum OpType {
 	OP_NOT_EQ,
 	OP_AND,
 	OP_OR,
+	OP_NOT,
 	// stack manipulation
 	OP_POP,
 	OP_DUP,  // [a] -> [a, a]

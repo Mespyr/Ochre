@@ -116,6 +116,14 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
         asmp.new_inst(asmp.inst_push(Argument(REGISTER_RBX)));
     } break;
 
+	case OP_NOT: {
+        asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX)));
+		asmp.new_inst(asmp.inst_test(Argument(REGISTER_RAX), Argument(REGISTER_RAX)));
+		asmp.new_inst(asmp.inst_sete(Argument(REGISTER_AL)));
+		asmp.new_inst(asmp.inst_movzx(Argument(REGISTER_RAX), Argument(REGISTER_AL)));
+		asmp.new_inst(asmp.inst_push(Argument(REGISTER_RAX)));
+	} break;
+
     case OP_POP: asmp.new_inst(asmp.inst_pop(Argument(REGISTER_RAX))); break;
 
     case OP_DUP: {

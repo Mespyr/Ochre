@@ -1,3 +1,4 @@
+#include <error.h>
 #include "type_checker.h"
 
 void TypeChecker::check_op() {
@@ -26,6 +27,20 @@ void TypeChecker::check_op() {
     case OP_AND:
     case OP_OR: handle_comparison_op(op); break;
 
+	case OP_NOT: {
+        if (type_stack.size() < 1) {
+            print_not_enough_arguments_error(op.loc, 1, 0, "not");
+            exit(1);
+        }
+        LangType a = type_stack.back();
+        type_stack.pop_back();
+		if (!is_prim_type_int(a)) {
+			print_invalid_type_error(op.loc, prim_type_name(TYPE_INT), human_readable_type(a), "not");
+			exit(1);
+		}
+		type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT)));
+	} break;
+		
     case OP_POP: {
         if (type_stack.size() < 1) {
             print_not_enough_arguments_error(op.loc, 1, 0, "pop");

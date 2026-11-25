@@ -2,7 +2,7 @@
 
 Op Parser::convert_token_to_op(Token                                           tok,
                                std::map<std::string, std::pair<LangType, int>> var_offsets) {
-    static_assert(OP_COUNT == 61, "unhandled op types in Parser::convert_token_to_op()");
+    static_assert(OP_COUNT == 62, "unhandled op types in Parser::convert_token_to_op()");
 
     if (tok.type == TOKEN_WORD) {
         if (tok.value == "dump") return Op(tok.loc, OP_DUMP);
@@ -32,6 +32,8 @@ Op Parser::convert_token_to_op(Token                                           t
             return Op(tok.loc, OP_AND);
         else if (tok.value == "or")
             return Op(tok.loc, OP_OR);
+        else if (tok.value == "not")
+            return Op(tok.loc, OP_NOT);
         // stack manipulation
         else if (tok.value == "pop")
             return Op(tok.loc, OP_POP);

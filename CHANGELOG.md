@@ -2,6 +2,8 @@
 - Fix bug where consecutive move instructions was being collapsed at the wrong places, resulting in code crashing or unexpected output. 
 - Make the number of optimization passes non-fixed, based on whether modifications in the previous pass were made, stopping only when no changes are made in a pass.
 - Examples: add Brainf*ck interpretor to showcase larger project potential
+- Add 'not' keyword to flip 'boolean' values (non-zero integers to zero).
+- Change primitive types to be more strict, with Char (characters) needing to be cast to and Int (integer) type for arithmetic and logical code.
 
 ### v0.2.1 Release Notes (2026-10-13)
 - Optimize chained 'mov' instructions to reduce them down to a single instruction

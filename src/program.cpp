@@ -196,12 +196,11 @@ bool is_prim_type(std::string t) {
 }
 
 bool is_prim_type_int(LangType t) {
-    return (t.ptr_to_trace == 0 &&
-            (t.base_type == prim_type_name(TYPE_INT) || t.base_type == prim_type_name(TYPE_CHAR)));
+    return (t.ptr_to_trace == 0 && (t.base_type == prim_type_name(TYPE_INT)));
 }
 
 bool is_prim_type_int(std::string t) {
-    return (t == prim_type_name(TYPE_INT) || t == prim_type_name(TYPE_CHAR));
+    return (t == prim_type_name(TYPE_INT));
 }
 
 bool is_pointer(LangType t) { return (t.ptr_to_trace > 0); }

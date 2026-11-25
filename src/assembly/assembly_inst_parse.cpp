@@ -33,6 +33,8 @@ std::string Instruction::to_string() {
     case INSTRUCTION_PUSH: output.append("push"); break;
     case INSTRUCTION_POP: output.append("pop"); break;
     case INSTRUCTION_MOV: output.append("mov"); break;
+    case INSTRUCTION_MOVZX: output.append("movzx"); break;
+    case INSTRUCTION_SETE: output.append("sete"); break;
     case INSTRUCTION_ADD: output.append("add"); break;
     case INSTRUCTION_SUB: output.append("sub"); break;
     case INSTRUCTION_IMUL: output.append("imul"); break;

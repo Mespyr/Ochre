@@ -12,6 +12,8 @@ enum InstructionType {
 	INSTRUCTION_PUSH,
 	INSTRUCTION_POP,
 	INSTRUCTION_MOV,
+	INSTRUCTION_MOVZX,
+	INSTRUCTION_SETE,
 
 	INSTRUCTION_ADD,
 	INSTRUCTION_SUB,
@@ -132,6 +134,8 @@ public:
 	Instruction inst_push(Argument arg);
 	Instruction inst_pop(Argument arg);
 	Instruction inst_mov(Argument arg1, Argument arg2);
+	Instruction inst_movzx(Argument arg1, Argument arg2);
+	Instruction inst_sete(Argument arg);
 
 	Instruction inst_add(Argument arg1, Argument arg2);
 	Instruction inst_sub(Argument arg1, Argument arg2);

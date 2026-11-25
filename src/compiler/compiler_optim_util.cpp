@@ -32,6 +32,7 @@ bool Compiler::register_is_used_before(AsmRegister reg, uint32_t end_idx) {
         case INSTRUCTION_SUB:
         case INSTRUCTION_IMUL:
         case INSTRUCTION_MOV:
+        case INSTRUCTION_MOVZX:
         case INSTRUCTION_CMP:
         case INSTRUCTION_CMOVE:
         case INSTRUCTION_CMOVG:
@@ -52,7 +53,8 @@ bool Compiler::register_is_used_before(AsmRegister reg, uint32_t end_idx) {
         case INSTRUCTION_INC:
         case INSTRUCTION_DEC:
         case INSTRUCTION_PUSH:
-        case INSTRUCTION_POP: {
+        case INSTRUCTION_POP:
+		case INSTRUCTION_SETE: {
             Argument a = inst.arguments.front();
             if (a.type == ARG_REGISTER && a.reg_value == reg) return true;
         } break;
@@ -85,12 +87,15 @@ bool Compiler::register_is_used_before_being_set_again(AsmRegister reg, uint32_t
             if (arg.type != ARG_REGISTER || arg.read_pointer) break;
             if (arg.reg_value == reg) return false;
         } break;
+
         case INSTRUCTION_PUSH: {
             Argument arg = inst.arguments.front();
             if (arg.type != ARG_REGISTER) break;
             if (arg.reg_value == reg) return true;
         } break;
-        case INSTRUCTION_MOV: {
+
+        case INSTRUCTION_MOV:
+		case INSTRUCTION_MOVZX: {
             Argument arg1 = inst.arguments.front();
             Argument arg2 = inst.arguments.back();
             if (arg1.type == ARG_REGISTER) {

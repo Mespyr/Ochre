@@ -32,6 +32,14 @@ Instruction AssemblyProgram::inst_mov(Argument arg1, Argument arg2) {
     return inst_2_arity_backend(INSTRUCTION_MOV, arg1, arg2);
 }
 
+Instruction AssemblyProgram::inst_movzx(Argument arg1, Argument arg2) {
+    return inst_2_arity_backend(INSTRUCTION_MOVZX, arg1, arg2);
+}
+
+Instruction AssemblyProgram::inst_sete(Argument arg) {
+	return inst_1_arity_backend(INSTRUCTION_SETE, arg);
+}
+
 Instruction AssemblyProgram::inst_add(Argument arg1, Argument arg2) {
     return inst_2_arity_backend(INSTRUCTION_ADD, arg1, arg2);
 }
