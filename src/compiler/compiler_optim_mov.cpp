@@ -4,7 +4,7 @@ bool Compiler::check_mov_reg_args(Instruction i) {
     // returns false if there is an something that
     // makes it so the outside function couldn't optimize
     Argument write_reg = i.arguments.at(0);
-    if (write_reg.read_pointer || write_reg.type != ARG_REGISTER) return false;
+    if (write_reg.read_pointer || write_reg.type != Argument::Type::REGISTER) return false;
     Argument save_value = i.arguments.at(1);
     if (save_value.read_pointer) {
         remove_stored_register(write_reg.reg_value);
@@ -13,7 +13,7 @@ bool Compiler::check_mov_reg_args(Instruction i) {
     return true;
 }
 
-void Compiler::compare_stored_values_mov(Instruction i, AsmRegister write_reg, int64_t save_value) {
+void Compiler::compare_stored_values_mov(Instruction i, Register write_reg, int64_t save_value) {
     if (stored_registers.count(write_reg)) {
         int64_t diff = save_value - stored_registers.at(write_reg);
         if (diff == 0)
@@ -51,13 +51,13 @@ void Compiler::optimize_consecutive_movs(uint64_t mov_idx) {
     Argument    set_register = instruction.arguments.at(0);
     Argument    read_register = instruction.arguments.at(1);
 
-    if (read_register.type != ARG_REGISTER || read_register.read_pointer) return;
+    if (read_register.type != Argument::Type::REGISTER || read_register.read_pointer) return;
 
     Instruction previous_instruction = fn_key.second.at(mov_idx - 1);
     Argument    previous_set_register = previous_instruction.arguments.at(0);
 
-    if (previous_instruction.type != INSTRUCTION_MOV) return;
-    if (previous_set_register.type != ARG_REGISTER || set_register.read_pointer) return;
+    if (previous_instruction.type != Instruction::Type::MOV) return;
+    if (previous_set_register.type != Argument::Type::REGISTER || set_register.read_pointer) return;
     if (previous_set_register.reg_value != read_register.reg_value) return;
 
     if (register_is_used_before_being_set_again(read_register.reg_value, mov_idx)) return;
@@ -75,9 +75,9 @@ void Compiler::handle_mov_reg_optim() {
     int64_t  int_val;
 
     switch (save_value.type) {
-    case ARG_INTEGER: int_val = save_value.int_value; break;
+    case Argument::Type::INTEGER: int_val = save_value.int_value; break;
 
-    case ARG_REGISTER: {
+    case Argument::Type::REGISTER: {
         if (!stored_registers.count(save_value.reg_value)) {
             remove_stored_register(write_reg.reg_value);
             return;
@@ -85,7 +85,7 @@ void Compiler::handle_mov_reg_optim() {
         int_val = stored_registers.at(save_value.reg_value);
     } break;
 
-    case ARG_VARIABLE: remove_stored_register(write_reg.reg_value); return;
+    case Argument::Type::VARIABLE: remove_stored_register(write_reg.reg_value); return;
     }
 
     if (stored_registers.count(write_reg.reg_value)) {

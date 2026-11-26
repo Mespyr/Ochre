@@ -15,7 +15,7 @@ void Compiler::set_idx(uint32_t i, Instruction inst) {
     number_of_changes++;
 }
 
-void Compiler::remove_stored_register(AsmRegister reg) {
+void Compiler::remove_stored_register(Register reg) {
     for (auto it = stored_registers.begin(); it != stored_registers.end();)
         if (it->first == reg)
             it = stored_registers.erase(it);
@@ -23,49 +23,49 @@ void Compiler::remove_stored_register(AsmRegister reg) {
             ++it;
 }
 
-bool Compiler::register_is_used_before(AsmRegister reg, uint32_t end_idx) {
+bool Compiler::register_is_used_before(Register reg, uint32_t end_idx) {
     for (uint32_t i = idx - 1; i > end_idx; i--) {
         Instruction inst = fn_key.second.at(i);
         switch (inst.type) {
         // 2 arity
-        case INSTRUCTION_ADD:
-        case INSTRUCTION_SUB:
-        case INSTRUCTION_IMUL:
-        case INSTRUCTION_MOV:
-        case INSTRUCTION_MOVZX:
-        case INSTRUCTION_CMP:
-        case INSTRUCTION_CMOVE:
-        case INSTRUCTION_CMOVG:
-        case INSTRUCTION_CMOVL:
-        case INSTRUCTION_CMOVGE:
-        case INSTRUCTION_CMOVLE:
-        case INSTRUCTION_CMOVNE:
-        case INSTRUCTION_AND:
-        case INSTRUCTION_OR: {
+        case Instruction::Type::ADD:
+        case Instruction::Type::SUB:
+        case Instruction::Type::IMUL:
+        case Instruction::Type::MOV:
+        case Instruction::Type::MOVZX:
+        case Instruction::Type::CMP:
+        case Instruction::Type::CMOVE:
+        case Instruction::Type::CMOVG:
+        case Instruction::Type::CMOVL:
+        case Instruction::Type::CMOVGE:
+        case Instruction::Type::CMOVLE:
+        case Instruction::Type::CMOVNE:
+        case Instruction::Type::AND:
+        case Instruction::Type::OR: {
             Argument a = inst.arguments.front();
             Argument b = inst.arguments.back();
-            if ((a.type == ARG_REGISTER && a.reg_value == reg) ||
-                (b.type == ARG_REGISTER && b.reg_value == reg))
+            if ((a.type == Argument::Type::REGISTER && a.reg_value == reg) ||
+                (b.type == Argument::Type::REGISTER && b.reg_value == reg))
                 return true;
         } break;
 
         // 1 arity
-        case INSTRUCTION_INC:
-        case INSTRUCTION_DEC:
-        case INSTRUCTION_PUSH:
-        case INSTRUCTION_POP:
-        case INSTRUCTION_SETE: {
+        case Instruction::Type::INC:
+        case Instruction::Type::DEC:
+        case Instruction::Type::PUSH:
+        case Instruction::Type::POP:
+        case Instruction::Type::SETE: {
             Argument a = inst.arguments.front();
-            if (a.type == ARG_REGISTER && a.reg_value == reg) return true;
+            if (a.type == Argument::Type::REGISTER && a.reg_value == reg) return true;
         } break;
 
         /* only one that really modifies more than js the register specified
            without using another op before or after it
          */
-        case INSTRUCTION_DIV: {
+        case Instruction::Type::DIV: {
             Argument a = inst.arguments.front();
-            if ((a.type == ARG_REGISTER && a.reg_value == reg) || (reg == REGISTER_RAX) ||
-                (reg == REGISTER_RDX))
+            if ((a.type == Argument::Type::REGISTER && a.reg_value == reg) ||
+                (reg == Register::RAX) || (reg == Register::RDX))
                 return true;
         } break;
 
@@ -75,30 +75,30 @@ bool Compiler::register_is_used_before(AsmRegister reg, uint32_t end_idx) {
     return false;
 }
 
-bool Compiler::register_is_used_before_being_set_again(AsmRegister reg, uint32_t start_idx) {
+bool Compiler::register_is_used_before_being_set_again(Register reg, uint32_t start_idx) {
     // true -> register value was used
     // false -> register was set again without being used
     for (uint32_t i = start_idx + 1; i < fn_key.second.size(); i++) {
         Instruction inst = fn_key.second.at(i);
         switch (inst.type) {
         // special
-        case INSTRUCTION_POP: {
+        case Instruction::Type::POP: {
             Argument arg = inst.arguments.front();
-            if (arg.type != ARG_REGISTER || arg.read_pointer) break;
+            if (arg.type != Argument::Type::REGISTER || arg.read_pointer) break;
             if (arg.reg_value == reg) return false;
         } break;
 
-        case INSTRUCTION_PUSH: {
+        case Instruction::Type::PUSH: {
             Argument arg = inst.arguments.front();
-            if (arg.type != ARG_REGISTER) break;
+            if (arg.type != Argument::Type::REGISTER) break;
             if (arg.reg_value == reg) return true;
         } break;
 
-        case INSTRUCTION_MOV:
-        case INSTRUCTION_MOVZX: {
+        case Instruction::Type::MOV:
+        case Instruction::Type::MOVZX: {
             Argument arg1 = inst.arguments.front();
             Argument arg2 = inst.arguments.back();
-            if (arg1.type == ARG_REGISTER) {
+            if (arg1.type == Argument::Type::REGISTER) {
                 if (arg1.reg_value == reg) {
                     // u are using the value inside the register to write data
                     if (arg1.read_pointer)
@@ -107,41 +107,41 @@ bool Compiler::register_is_used_before_being_set_again(AsmRegister reg, uint32_t
                         return false;
                 }
             }
-            if (arg2.type == ARG_REGISTER && arg2.reg_value == reg) return true;
+            if (arg2.type == Argument::Type::REGISTER && arg2.reg_value == reg) return true;
         } break;
-        case INSTRUCTION_DIV: {
+        case Instruction::Type::DIV: {
             // div uses rax, rbx and rdx
             // rbx is not changed, but rax and rdx are
             Argument arg = inst.arguments.front();
-            if (arg.type == ARG_REGISTER && arg.reg_value == reg) return true;  // rbx
-            if (reg == REGISTER_RAX || reg == REGISTER_RDX) return false;
+            if (arg.type == Argument::Type::REGISTER && arg.reg_value == reg) return true;  // rbx
+            if (reg == Register::RAX || reg == Register::RDX) return false;
         } break;
 
         // 2-arity using both arguments
-        case INSTRUCTION_ADD:
-        case INSTRUCTION_SUB:
-        case INSTRUCTION_IMUL:
-        case INSTRUCTION_CMP:
-        case INSTRUCTION_CMOVE:
-        case INSTRUCTION_CMOVG:
-        case INSTRUCTION_CMOVL:
-        case INSTRUCTION_CMOVGE:
-        case INSTRUCTION_CMOVLE:
-        case INSTRUCTION_CMOVNE: {
+        case Instruction::Type::ADD:
+        case Instruction::Type::SUB:
+        case Instruction::Type::IMUL:
+        case Instruction::Type::CMP:
+        case Instruction::Type::CMOVE:
+        case Instruction::Type::CMOVG:
+        case Instruction::Type::CMOVL:
+        case Instruction::Type::CMOVGE:
+        case Instruction::Type::CMOVLE:
+        case Instruction::Type::CMOVNE: {
             Argument arg1 = inst.arguments.front();
             Argument arg2 = inst.arguments.back();
-            if ((arg1.type == ARG_REGISTER && arg1.reg_value == reg) ||
-                (arg2.type == ARG_REGISTER && arg2.reg_value == reg))
+            if ((arg1.type == Argument::Type::REGISTER && arg1.reg_value == reg) ||
+                (arg2.type == Argument::Type::REGISTER && arg2.reg_value == reg))
                 return true;
         } break;
 
-        case INSTRUCTION_CALL:
-        case INSTRUCTION_SYSCALL:
-        case INSTRUCTION_LABEL:
-        case INSTRUCTION_JMP:
-        case INSTRUCTION_JZ:
-        case INSTRUCTION_JNZ:
-        case INSTRUCTION_RET:  // JUST TO MAKE SURE IDK
+        case Instruction::Type::CALL:
+        case Instruction::Type::SYSCALL:
+        case Instruction::Type::LABEL:
+        case Instruction::Type::JMP:
+        case Instruction::Type::JZ:
+        case Instruction::Type::JNZ:
+        case Instruction::Type::RET:  // JUST TO MAKE SURE IDK
             return true;
 
         default: break;
@@ -155,22 +155,22 @@ int64_t Compiler::find_idx_for_top_push() {
     for (uint32_t i = idx - 1; i > 0; i--) {
         Instruction inst = fn_key.second.at(i);
         switch (inst.type) {
-        case INSTRUCTION_POP: indent++; break;
+        case Instruction::Type::POP: indent++; break;
 
-        case INSTRUCTION_PUSH: {
+        case Instruction::Type::PUSH: {
             if (indent > 0)
                 indent--;
             else
                 return i;
         } break;
 
-        case INSTRUCTION_CALL:
-        case INSTRUCTION_LABEL:
-        case INSTRUCTION_JMP:
-        case INSTRUCTION_JZ:
-        case INSTRUCTION_JNZ:
-        case INSTRUCTION_SYSCALL:
-        case INSTRUCTION_RET:  // JUST TO MAKE SURE IDK
+        case Instruction::Type::CALL:
+        case Instruction::Type::LABEL:
+        case Instruction::Type::JMP:
+        case Instruction::Type::JZ:
+        case Instruction::Type::JNZ:
+        case Instruction::Type::SYSCALL:
+        case Instruction::Type::RET:  // JUST TO MAKE SURE IDK
             return -1;
 
         default: break;

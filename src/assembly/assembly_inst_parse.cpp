@@ -14,9 +14,9 @@ std::string Argument::to_string() {
     if (read_pointer) output.append("[");
 
     switch (type) {
-    case ARG_INTEGER: output.append(std::to_string(int_value)); break;
-    case ARG_VARIABLE: output.append(var_value); break;
-    case ARG_REGISTER: output.append(register_to_string(reg_value)); break;
+    case Argument::Type::INTEGER: output.append(std::to_string(int_value)); break;
+    case Argument::Type::VARIABLE: output.append(var_value); break;
+    case Argument::Type::REGISTER: output.append(register_to_string(reg_value)); break;
     }
 
     if (add_amount != 0) output.append("+" + std::to_string(add_amount));
@@ -30,35 +30,35 @@ std::string Instruction::to_string() {
     std::string output;
 
     switch (type) {
-    case INSTRUCTION_PUSH: output.append("push"); break;
-    case INSTRUCTION_POP: output.append("pop"); break;
-    case INSTRUCTION_MOV: output.append("mov"); break;
-    case INSTRUCTION_MOVZX: output.append("movzx"); break;
-    case INSTRUCTION_SETE: output.append("sete"); break;
-    case INSTRUCTION_ADD: output.append("add"); break;
-    case INSTRUCTION_SUB: output.append("sub"); break;
-    case INSTRUCTION_IMUL: output.append("imul"); break;
-    case INSTRUCTION_DIV: output.append("div"); break;
-    case INSTRUCTION_INC: output.append("inc"); break;
-    case INSTRUCTION_DEC: output.append("dec"); break;
-    case INSTRUCTION_CMP: output.append("cmp"); break;
-    case INSTRUCTION_CMOVE: output.append("cmove"); break;
-    case INSTRUCTION_CMOVG: output.append("cmovg"); break;
-    case INSTRUCTION_CMOVL: output.append("cmovl"); break;
-    case INSTRUCTION_CMOVGE: output.append("cmovge"); break;
-    case INSTRUCTION_CMOVLE: output.append("cmovle"); break;
-    case INSTRUCTION_CMOVNE: output.append("cmovne"); break;
-    case INSTRUCTION_AND: output.append("and"); break;
-    case INSTRUCTION_OR: output.append("or"); break;
-    case INSTRUCTION_LABEL: return arg_name + ":"; break;
-    case INSTRUCTION_JZ: return "jz " + arg_name; break;
-    case INSTRUCTION_JNZ: return "jnz " + arg_name; break;
-    case INSTRUCTION_JMP: return "jmp " + arg_name; break;
-    case INSTRUCTION_TEST: output.append("test"); break;
-    case INSTRUCTION_XOR: output.append("xor"); break;
-    case INSTRUCTION_CALL: return "call " + arg_name; break;
-    case INSTRUCTION_SYSCALL: return "syscall"; break;
-    case INSTRUCTION_RET: return "ret"; break;
+    case Instruction::Type::PUSH: output.append("push"); break;
+    case Instruction::Type::POP: output.append("pop"); break;
+    case Instruction::Type::MOV: output.append("mov"); break;
+    case Instruction::Type::MOVZX: output.append("movzx"); break;
+    case Instruction::Type::SETE: output.append("sete"); break;
+    case Instruction::Type::ADD: output.append("add"); break;
+    case Instruction::Type::SUB: output.append("sub"); break;
+    case Instruction::Type::IMUL: output.append("imul"); break;
+    case Instruction::Type::DIV: output.append("div"); break;
+    case Instruction::Type::INC: output.append("inc"); break;
+    case Instruction::Type::DEC: output.append("dec"); break;
+    case Instruction::Type::CMP: output.append("cmp"); break;
+    case Instruction::Type::CMOVE: output.append("cmove"); break;
+    case Instruction::Type::CMOVG: output.append("cmovg"); break;
+    case Instruction::Type::CMOVL: output.append("cmovl"); break;
+    case Instruction::Type::CMOVGE: output.append("cmovge"); break;
+    case Instruction::Type::CMOVLE: output.append("cmovle"); break;
+    case Instruction::Type::CMOVNE: output.append("cmovne"); break;
+    case Instruction::Type::AND: output.append("and"); break;
+    case Instruction::Type::OR: output.append("or"); break;
+    case Instruction::Type::LABEL: return arg_name + ":"; break;
+    case Instruction::Type::JZ: return "jz " + arg_name; break;
+    case Instruction::Type::JNZ: return "jnz " + arg_name; break;
+    case Instruction::Type::JMP: return "jmp " + arg_name; break;
+    case Instruction::Type::TEST: output.append("test"); break;
+    case Instruction::Type::XOR: output.append("xor"); break;
+    case Instruction::Type::CALL: return "call " + arg_name; break;
+    case Instruction::Type::SYSCALL: return "syscall"; break;
+    case Instruction::Type::RET: return "ret"; break;
     }
 
     if (arguments.size() == 0) return output;

@@ -7,35 +7,36 @@ void Compiler::optimize_func() {
         Instruction i = fn_key.second.at(idx);
 
         switch (i.type) {
-        case INSTRUCTION_ADD:
-        case INSTRUCTION_SUB: {
-            if (i.arguments.at(1).type == ARG_INTEGER && i.arguments.at(1).int_value == 0)
+        case Instruction::Type::ADD:
+        case Instruction::Type::SUB: {
+            if (i.arguments.at(1).type == Argument::Type::INTEGER &&
+                i.arguments.at(1).int_value == 0)
                 erase_idx(idx);
-            else if (i.arguments.front().type == ARG_REGISTER &&
+            else if (i.arguments.front().type == Argument::Type::REGISTER &&
                      i.arguments.front().read_pointer == false)
                 remove_stored_register(i.arguments.front().reg_value);
         } break;
 
-        case INSTRUCTION_MOV: handle_mov_reg_optim(); break;
-        case INSTRUCTION_POP: handle_stack_pop_optim(); break;
-        case INSTRUCTION_PUSH: handle_stack_push_optim(); break;
+        case Instruction::Type::MOV: handle_mov_reg_optim(); break;
+        case Instruction::Type::POP: handle_stack_pop_optim(); break;
+        case Instruction::Type::PUSH: handle_stack_push_optim(); break;
 
-        case INSTRUCTION_CALL:
-        case INSTRUCTION_SYSCALL:
-        case INSTRUCTION_LABEL:
-        case INSTRUCTION_JMP:
-        case INSTRUCTION_JZ:
-        case INSTRUCTION_JNZ:
+        case Instruction::Type::CALL:
+        case Instruction::Type::SYSCALL:
+        case Instruction::Type::LABEL:
+        case Instruction::Type::JMP:
+        case Instruction::Type::JZ:
+        case Instruction::Type::JNZ:
             // cant be tracked across functions or jumps
             stored_registers.clear();
             break;
 
-        case INSTRUCTION_CMOVE:
-        case INSTRUCTION_CMOVG:
-        case INSTRUCTION_CMOVL:
-        case INSTRUCTION_CMOVGE:
-        case INSTRUCTION_CMOVLE:
-        case INSTRUCTION_CMOVNE:
+        case Instruction::Type::CMOVE:
+        case Instruction::Type::CMOVG:
+        case Instruction::Type::CMOVL:
+        case Instruction::Type::CMOVGE:
+        case Instruction::Type::CMOVLE:
+        case Instruction::Type::CMOVNE:
             // involved arguments cannot be tracked
             remove_stored_register(i.arguments.front().reg_value);
             remove_stored_register(i.arguments.back().reg_value);

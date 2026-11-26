@@ -5,19 +5,19 @@ void Compiler::handle_write_data_to_ptr(Op op) {
     // rbx is the data
     switch (op.mode) {
     case Op::Mode::BIT_8:
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX, true), Argument(REGISTER_BL)));
+        asmp.new_inst(asmp.inst_mov(Argument(Register::RAX, true), Argument(Register::BL)));
         break;
     case Op::Mode::BIT_64:
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX, true), Argument(REGISTER_RBX)));
+        asmp.new_inst(asmp.inst_mov(Argument(Register::RAX, true), Argument(Register::RBX)));
         break;
     case Op::Mode::STRUCT: {
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RCX), Argument(REGISTER_RBX, true)));
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX, true), Argument(REGISTER_RCX)));
+        asmp.new_inst(asmp.inst_mov(Argument(Register::RCX), Argument(Register::RBX, true)));
+        asmp.new_inst(asmp.inst_mov(Argument(Register::RAX, true), Argument(Register::RCX)));
         for (int i = 8; i < op.int_operand_2; i += 8) {
             asmp.new_inst(
-                asmp.inst_mov(Argument(REGISTER_RCX), Argument(REGISTER_RBX, true, INFER_NONE, i)));
+                asmp.inst_mov(Argument(Register::RCX), Argument(Register::RBX, true, INFER_NONE, i)));
             asmp.new_inst(
-                asmp.inst_mov(Argument(REGISTER_RAX, true, INFER_NONE, i), Argument(REGISTER_RCX)));
+                asmp.inst_mov(Argument(Register::RAX, true, INFER_NONE, i), Argument(Register::RCX)));
         }
     } break;
     };
@@ -28,12 +28,12 @@ void Compiler::handle_copy_ptr_to_ptr(Op op) {
     // rbx is ptr to read from
     switch (op.mode) {
     case Op::Mode::BIT_8:
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_CL), Argument(REGISTER_RBX, true)));
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX, true), Argument(REGISTER_CL)));
+        asmp.new_inst(asmp.inst_mov(Argument(Register::CL), Argument(Register::RBX, true)));
+        asmp.new_inst(asmp.inst_mov(Argument(Register::RAX, true), Argument(Register::CL)));
         break;
     case Op::Mode::BIT_64:
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RCX), Argument(REGISTER_RBX, true)));
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX, true), Argument(REGISTER_RCX)));
+        asmp.new_inst(asmp.inst_mov(Argument(Register::RCX), Argument(Register::RBX, true)));
+        asmp.new_inst(asmp.inst_mov(Argument(Register::RAX, true), Argument(Register::RCX)));
         break;
     case Op::Mode::STRUCT:
         print_error_at_loc(op.loc, "compiler error! this opcode (" +
@@ -50,15 +50,15 @@ void Compiler::handle_read_data_from_ptr(Op op) {
     // unless pushing struct; we then push rax onto stack
     switch (op.mode) {
     case Op::Mode::BIT_8:
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RBX), Argument(0)));
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_BL), Argument(REGISTER_RAX, true)));
-        asmp.new_inst(asmp.inst_push(Argument(REGISTER_RBX)));
+        asmp.new_inst(asmp.inst_mov(Argument(Register::RBX), Argument(0)));
+        asmp.new_inst(asmp.inst_mov(Argument(Register::BL), Argument(Register::RAX, true)));
+        asmp.new_inst(asmp.inst_push(Argument(Register::RBX)));
         break;
     case Op::Mode::BIT_64:
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RBX), Argument(0)));
-        asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RBX), Argument(REGISTER_RAX, true)));
-        asmp.new_inst(asmp.inst_push(Argument(REGISTER_RBX)));
+        asmp.new_inst(asmp.inst_mov(Argument(Register::RBX), Argument(0)));
+        asmp.new_inst(asmp.inst_mov(Argument(Register::RBX), Argument(Register::RAX, true)));
+        asmp.new_inst(asmp.inst_push(Argument(Register::RBX)));
         break;
-    case Op::Mode::STRUCT: asmp.new_inst(asmp.inst_push(Argument(REGISTER_RAX))); break;
+    case Op::Mode::STRUCT: asmp.new_inst(asmp.inst_push(Argument(Register::RAX))); break;
     }
 }

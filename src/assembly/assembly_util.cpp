@@ -1,24 +1,24 @@
 #include "assembly.h"
 
-std::string register_to_string(AsmRegister reg) {
+std::string register_to_string(Register reg) {
     std::string output;
 
     switch (reg) {
-    case REGISTER_RAX: return "rax";
-    case REGISTER_RBX: return "rbx";
-    case REGISTER_RCX: return "rcx";
-    case REGISTER_RSP: return "rsp";
-    case REGISTER_RDI: return "rdi";
-    case REGISTER_RSI: return "rsi";
-    case REGISTER_RDX: return "rdx";
-    case REGISTER_R10: return "r10";
-    case REGISTER_R8: return "r8";
-    case REGISTER_R9: return "r9";
+    case Register::RAX: return "rax";
+    case Register::RBX: return "rbx";
+    case Register::RCX: return "rcx";
+    case Register::RSP: return "rsp";
+    case Register::RDI: return "rdi";
+    case Register::RSI: return "rsi";
+    case Register::RDX: return "rdx";
+    case Register::R10: return "r10";
+    case Register::R8: return "r8";
+    case Register::R9: return "r9";
 
-    case REGISTER_AL: return "al";
-    case REGISTER_BL: return "bl";
-    case REGISTER_CL: return "cl";
-    case REGISTER_DL: return "dl";
+    case Register::AL: return "al";
+    case Register::BL: return "bl";
+    case Register::CL: return "cl";
+    case Register::DL: return "dl";
     }
 }
 

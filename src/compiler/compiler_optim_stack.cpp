@@ -32,17 +32,17 @@ void Compiler::handle_stack_push_optim() {
 
     // check if pushing a register on the stack
     Argument arg = i.arguments.front();
-    if (arg.type != ARG_REGISTER || arg.read_pointer || arg.add_amount != 0) return;
+    if (arg.type != Argument::Type::REGISTER || arg.read_pointer || arg.add_amount != 0) return;
 
-    AsmRegister push_reg = arg.reg_value;
+    Register push_reg = arg.reg_value;
 
     // if there is no instructions before this one, return
     if (idx == 0) return;
 
     // assumes that we are popping to a register (we only pop to registers)
     Instruction prev_inst = fn_key.second.at(idx - 1);
-    if (prev_inst.type != INSTRUCTION_POP) return;
-    AsmRegister pop_reg = prev_inst.arguments.front().reg_value;
+    if (prev_inst.type != Instruction::Type::POP) return;
+    Register pop_reg = prev_inst.arguments.front().reg_value;
 
     if (push_reg != pop_reg) return;
 
@@ -58,6 +58,6 @@ void Compiler::handle_stack_push_optim() {
         return;
     }
 
-    set_idx(idx - 1, asmp.inst_mov(prev_inst.arguments.front(), Argument(REGISTER_RSP, true)));
+    set_idx(idx - 1, asmp.inst_mov(prev_inst.arguments.front(), Argument(Register::RSP, true)));
     erase_idx(idx);
 }
