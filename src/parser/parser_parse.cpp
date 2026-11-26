@@ -5,15 +5,15 @@ std::vector<Op> Parser::link_ops(std::vector<Op>                            ops,
     for (uint64_t i = 0; i < ops.size(); i++) {
         Op current_op = ops.at(i);
 
-        if (current_op.type == OP_JMP || current_op.type == OP_CJMPF ||
-            current_op.type == OP_CJMPT || current_op.type == OP_JMPE ||
-            current_op.type == OP_CJMPET || current_op.type == OP_CJMPEF) {
+        if (current_op.type == Op::Type::JMP || current_op.type == Op::Type::CJMPF ||
+            current_op.type == Op::Type::CJMPT || current_op.type == Op::Type::JMPE ||
+            current_op.type == Op::Type::CJMPET || current_op.type == Op::Type::CJMPEF) {
             if (labels.count(current_op.str_operand)) {
-                if (current_op.type == OP_JMP || current_op.type == OP_CJMPF ||
-                    current_op.type == OP_CJMPT)
+                if (current_op.type == Op::Type::JMP || current_op.type == Op::Type::CJMPF ||
+                    current_op.type == Op::Type::CJMPT)
                     current_op.int_operand = labels.at(current_op.str_operand).first;
-                else if (current_op.type == OP_JMPE || current_op.type == OP_CJMPET ||
-                         current_op.type == OP_CJMPEF)
+                else if (current_op.type == Op::Type::JMPE || current_op.type == Op::Type::CJMPET ||
+                         current_op.type == Op::Type::CJMPEF)
                     current_op.int_operand = labels.at(current_op.str_operand).second;
                 ops.at(i) = current_op;
             } else {
@@ -32,11 +32,11 @@ void Parser::parse() {
         Op current_op = convert_token_to_op(tokens.at(i));
 
         switch (current_op.type) {
-        case OP_FUN: parse_function(current_op); break;
+        case Op::Type::FUN: parse_function(current_op); break;
 
-        case OP_STRUCT: parse_struct(current_op); break;
+        case Op::Type::STRUCT: parse_struct(current_op); break;
 
-        case OP_IMPORT: {
+        case Op::Type::IMPORT: {
             if (i++ == tokens.size()) {
                 print_error_at_loc(current_op.loc,
                                    "Unexpected 'import' keyword found while parsing");
@@ -44,7 +44,7 @@ void Parser::parse() {
             }
 
             Token include_file_token = tokens.at(i);
-            if (include_file_token.type != TOKEN_STRING) {
+            if (include_file_token.type != Token::Type::STRING) {
                 print_error_at_loc(include_file_token.loc,
                                    "Was expecting token of type string after "
                                    "'import' statement");
@@ -69,7 +69,7 @@ void Parser::parse() {
             }
         } break;
 
-        case OP_CONST: {
+        case Op::Type::CONST: {
             i++;
             // check if function name is in the token stream
             if (i >= tokens.size()) {

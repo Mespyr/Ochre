@@ -1,11 +1,12 @@
 #include <error.h>
+
 #include "type_checker.h"
 
 void TypeChecker::check_op() {
     Op op = function->ops.at(idx);
 
     switch (op.type) {
-    case OP_DUMP: {
+    case Op::Type::DUMP: {
         if (type_stack.size() < 1) {
             print_not_enough_arguments_error(op.loc, 1, 0, "dump");
             exit(1);
@@ -13,35 +14,36 @@ void TypeChecker::check_op() {
         type_stack.pop_back();
     } break;
 
-    case OP_PLUS:
-    case OP_MINUS:
-    case OP_MUL:
-    case OP_DIV: handle_arithmetic_op(op); break;
+    case Op::Type::PLUS:
+    case Op::Type::MINUS:
+    case Op::Type::MUL:
+    case Op::Type::DIV: handle_arithmetic_op(op); break;
 
-    case OP_EQUAL:
-    case OP_GREATER:
-    case OP_LESS:
-    case OP_GREATER_EQ:
-    case OP_LESS_EQ:
-    case OP_NOT_EQ:
-    case OP_AND:
-    case OP_OR: handle_comparison_op(op); break;
+    case Op::Type::EQUAL:
+    case Op::Type::GREATER:
+    case Op::Type::LESS:
+    case Op::Type::GREATER_EQ:
+    case Op::Type::LESS_EQ:
+    case Op::Type::NOT_EQ:
+    case Op::Type::AND:
+    case Op::Type::OR: handle_comparison_op(op); break;
 
-	case OP_NOT: {
+    case Op::Type::NOT: {
         if (type_stack.size() < 1) {
             print_not_enough_arguments_error(op.loc, 1, 0, "not");
             exit(1);
         }
         LangType a = type_stack.back();
         type_stack.pop_back();
-		if (!is_prim_type_int(a)) {
-			print_invalid_type_error(op.loc, prim_type_name(TYPE_INT), human_readable_type(a), "not");
-			exit(1);
-		}
-		type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT)));
-	} break;
-		
-    case OP_POP: {
+        if (!is_prim_type_int(a)) {
+            print_invalid_type_error(op.loc, prim_type_name(TYPE_INT), human_readable_type(a),
+                                     "not");
+            exit(1);
+        }
+        type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT)));
+    } break;
+
+    case Op::Type::POP: {
         if (type_stack.size() < 1) {
             print_not_enough_arguments_error(op.loc, 1, 0, "pop");
             exit(1);
@@ -49,7 +51,7 @@ void TypeChecker::check_op() {
         type_stack.pop_back();
     } break;
 
-    case OP_DUP: {
+    case Op::Type::DUP: {
         if (type_stack.size() < 1) {
             print_not_enough_arguments_error(op.loc, 1, 0, "dup");
             exit(1);
@@ -59,7 +61,7 @@ void TypeChecker::check_op() {
         type_stack.push_back(a);
     } break;
 
-    case OP_SWP: {
+    case Op::Type::SWP: {
         if (type_stack.size() < 2) {
             print_not_enough_arguments_error(op.loc, 2, type_stack.size(), "swp");
             exit(1);
@@ -72,7 +74,7 @@ void TypeChecker::check_op() {
         type_stack.push_back(b);
     } break;
 
-    case OP_ROT: {
+    case Op::Type::ROT: {
         if (type_stack.size() < 3) {
             print_not_enough_arguments_error(op.loc, 3, type_stack.size(), "rot", "rotate");
             exit(1);
@@ -89,7 +91,7 @@ void TypeChecker::check_op() {
         type_stack.push_back(c);
     } break;
 
-    case OP_OVER: {
+    case Op::Type::OVER: {
         if (type_stack.size() < 2) {
             print_not_enough_arguments_error(op.loc, 2, type_stack.size(), "over");
             exit(1);
@@ -105,7 +107,7 @@ void TypeChecker::check_op() {
         type_stack.push_back(b);
     } break;
 
-    case OP_SET_VAR: {
+    case Op::Type::SET_VAR: {
         if (type_stack.size() < 1) {
             print_not_enough_arguments_error(op.loc, 1, 0, "&", "set variable");
             exit(1);
@@ -125,10 +127,10 @@ void TypeChecker::check_op() {
                                              human_readable_type(a), "@", "set variable");
                     exit(1);
                 }
-                op.type = OP_SET_VAR_FROM_OTHER_PTR;
+                op.type = Op::Type::SET_VAR_FROM_OTHER_PTR;
                 program.functions.at(func_name).ops.at(idx) = op;
             }
-        } else if (op.mode == MODE_STRUCT) {
+        } else if (op.mode == Op::Mode::STRUCT) {
             expected_type.ptr_to_trace++;
             // a should be a pointer to the expected_type
             if (a.base_type != expected_type.base_type ||
@@ -141,7 +143,7 @@ void TypeChecker::check_op() {
         }
     } break;
 
-    case OP_SET_VAR_STRUCT_MEMBER: {
+    case Op::Type::SET_VAR_STRUCT_MEMBER: {
         if (type_stack.size() < 1) {
             print_not_enough_arguments_error(op.loc, 1, 0, "@", "set struct member");
             exit(1);
@@ -151,9 +153,9 @@ void TypeChecker::check_op() {
         std::pair<LangType, int> member_type_offset =
             variable_member_offset(op, function->var_offsets, program.structs);
         // the type needs to be a pointer to a struct
-        // op-type OP_SET_MEMBER_STRUCT assumes the value was a struct (no
+        // op-type Op::Type::SET_MEMBER_STRUCT assumes the value was a struct (no
         // pointers)
-        if (op.mode == MODE_STRUCT) member_type_offset.first.ptr_to_trace += 1;
+        if (op.mode == Op::Mode::STRUCT) member_type_offset.first.ptr_to_trace += 1;
         if (a.base_type != member_type_offset.first.base_type &&
             a.ptr_to_trace != member_type_offset.first.ptr_to_trace) {
             print_error_at_loc(op.loc, "Cannot set '" + op.str_operand + "' to type '" +
@@ -163,7 +165,7 @@ void TypeChecker::check_op() {
         }
     } break;
 
-    case OP_READ_VAR: {
+    case Op::Type::READ_VAR: {
         // if it is a primitive type sizes as only primitive types can be read
         // directly
         if (op.is_prim_type_mode()) {
@@ -172,27 +174,27 @@ void TypeChecker::check_op() {
             type_stack.push_back(t);
         } else {
             print_error_at_loc(op.loc,
-                               "compiler error: op OP_READ_VAR is set in a non-primitive "
+                               "compiler error: op Op::Type::READ_VAR is set in a non-primitive "
                                "mode, this is probably a bug in the parser");
             exit(1);
         }
     } break;
 
-    case OP_READ_VAR_STRUCT_MEMBER: {
+    case Op::Type::READ_VAR_STRUCT_MEMBER: {
         std::pair<LangType, int> member_type_offset =
             variable_member_offset(op, function->var_offsets, program.structs);
         member_type_offset.first.loc = op.loc;
-        if (op.mode == MODE_STRUCT) member_type_offset.first.ptr_to_trace++;
+        if (op.mode == Op::Mode::STRUCT) member_type_offset.first.ptr_to_trace++;
         type_stack.push_back(member_type_offset.first);
     } break;
 
-    case OP_PUSH_VAR:
+    case Op::Type::PUSH_VAR:
         type_stack.push_back(
             LangType(op.loc, function->var_offsets.at(op.str_operand).first.base_type,
                      function->var_offsets.at(op.str_operand).first.ptr_to_trace + 1));
         break;
 
-    case OP_SET_PTR: {
+    case Op::Type::SET_PTR: {
         if (type_stack.size() < 2) {
             print_not_enough_arguments_error(op.loc, 2, type_stack.size(), "@", "set pointer");
             exit(1);
@@ -222,10 +224,10 @@ void TypeChecker::check_op() {
                                              human_readable_type(b), "@", "set pointer");
                     exit(1);
                 }
-                op.type = OP_SET_PTR_FROM_OTHER_PTR;
+                op.type = Op::Type::SET_PTR_FROM_OTHER_PTR;
                 program.functions.at(func_name).ops.at(idx) = op;
             }
-        } else if (op.mode == MODE_STRUCT) {
+        } else if (op.mode == Op::Mode::STRUCT) {
             expected_type.ptr_to_trace++;
             // a should be a pointer to the expected_type, print error if not
             if (a.base_type != expected_type.base_type ||
@@ -239,7 +241,7 @@ void TypeChecker::check_op() {
         }
     } break;
 
-    case OP_SET_PTR_STRUCT_MEMBER: {
+    case Op::Type::SET_PTR_STRUCT_MEMBER: {
         if (type_stack.size() < 2) {
             print_not_enough_arguments_error(op.loc, 2, type_stack.size(), "@",
                                              "set pointer member");
@@ -260,7 +262,7 @@ void TypeChecker::check_op() {
         expected_type.ptr_to_trace--;
 
         std::pair<LangType, int> member_type_offset = struct_member_offset(op, program.structs);
-        if (op.mode == MODE_STRUCT) member_type_offset.first.ptr_to_trace++;
+        if (op.mode == Op::Mode::STRUCT) member_type_offset.first.ptr_to_trace++;
         if (!types_equal(b, member_type_offset.first)) {
             print_error_at_loc(op.loc, "cannot set pointer of type '" + op.str_operand +
                                            "' to type '" + human_readable_type(b) +
@@ -270,7 +272,7 @@ void TypeChecker::check_op() {
         }
     } break;
 
-    case OP_READ_PTR: {
+    case Op::Type::READ_PTR: {
         if (type_stack.size() < 1) {
             print_not_enough_arguments_error(op.loc, 1, 0, "&", "read pointer");
             exit(1);
@@ -289,7 +291,7 @@ void TypeChecker::check_op() {
         type_stack.push_back(expected_type);
     } break;
 
-    case OP_READ_PTR_STRUCT_MEMBER: {
+    case Op::Type::READ_PTR_STRUCT_MEMBER: {
         if (type_stack.size() < 1) {
             print_not_enough_arguments_error(op.loc, 1, 0, "&", "read pointer member");
             exit(1);
@@ -310,21 +312,21 @@ void TypeChecker::check_op() {
 
         std::pair<LangType, int> member_type_offset = struct_member_offset(op, program.structs);
         member_type_offset.first.loc = op.loc;
-        if (op.mode == MODE_STRUCT) member_type_offset.first.ptr_to_trace++;
+        if (op.mode == Op::Mode::STRUCT) member_type_offset.first.ptr_to_trace++;
         type_stack.push_back(member_type_offset.first);
     } break;
 
-    case OP_SYSCALL0:
-    case OP_SYSCALL1:
-    case OP_SYSCALL2:
-    case OP_SYSCALL3:
-    case OP_SYSCALL4:
-    case OP_SYSCALL5:
-    case OP_SYSCALL6: handle_syscall_op(op); break;
+    case Op::Type::SYSCALL0:
+    case Op::Type::SYSCALL1:
+    case Op::Type::SYSCALL2:
+    case Op::Type::SYSCALL3:
+    case Op::Type::SYSCALL4:
+    case Op::Type::SYSCALL5:
+    case Op::Type::SYSCALL6: handle_syscall_op(op); break;
 
-    case OP_LABEL: label_stack_states.insert({op.str_operand, type_stack}); break;
+    case Op::Type::LABEL: label_stack_states.insert({op.str_operand, type_stack}); break;
 
-    case OP_LABEL_END:
+    case Op::Type::LABEL_END:
         if (!compare_type_stacks(type_stack, label_stack_states.at(op.str_operand))) {
             print_error_at_loc(op.loc,
                                "different types on stack before and after label definition. "
@@ -333,36 +335,36 @@ void TypeChecker::check_op() {
         }
         break;
 
-    case OP_JMP:
-    case OP_JMPE:
-    case OP_CJMPT:
-    case OP_CJMPF:
-    case OP_CJMPET:
-    case OP_CJMPEF: handle_jump_op(op); break;
+    case Op::Type::JMP:
+    case Op::Type::JMPE:
+    case Op::Type::CJMPT:
+    case Op::Type::CJMPF:
+    case Op::Type::CJMPET:
+    case Op::Type::CJMPEF: handle_jump_op(op); break;
 
-    case OP_PUSH_INT: type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0)); break;
+    case Op::Type::PUSH_INT: type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0)); break;
 
-    case OP_PUSH_CHAR: type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_CHAR), 0)); break;
+    case Op::Type::PUSH_CHAR: type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_CHAR), 0)); break;
 
-    case OP_PUSH_STR:
+    case Op::Type::PUSH_STR:
         type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
         type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_CHAR),
                                       1));  // pointer to array of chars (string)
         break;
 
-    case OP_PUSH_ARGV:
+    case Op::Type::PUSH_ARGV:
         type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
         type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_CHAR),
                                       2));  // pointer to array of char pointers (array of strings)
         break;
 
-    case OP_PUSH_TYPE_INSTANCE: {
+    case Op::Type::PUSH_TYPE_INSTANCE: {
         LangType t(op.loc, op.str_operand);
         t.ptr_to_trace++;
         type_stack.push_back(t);
     } break;
 
-    case OP_DELETE_PTR: {
+    case Op::Type::DELETE_PTR: {
         if (type_stack.size() < 1) {
             print_not_enough_arguments_error(op.loc, 1, 0, "delete", "delete pointer");
             exit(1);
@@ -377,7 +379,7 @@ void TypeChecker::check_op() {
         program.functions.at(func_name).ops.at(idx) = op;
     } break;
 
-    case OP_TYPE_CAST: {
+    case Op::Type::TYPE_CAST: {
         if (type_stack.size() < 1) {
             print_not_enough_arguments_error(op.loc, 1, 0, "cast:", "type cast");
             exit(1);
@@ -386,7 +388,7 @@ void TypeChecker::check_op() {
         type_stack.push_back(LangType(op.loc, op.str_operand));
     } break;
 
-    case OP_FUNCTION_CALL: {
+    case Op::Type::FUNCTION_CALL: {
         assert(program.functions.count(op.str_operand));
 
         Function call_func = program.functions.at(op.str_operand);
@@ -422,27 +424,27 @@ void TypeChecker::check_op() {
         for (LangType t : call_func.signature.return_stack) type_stack.push_back(t);
     } break;
 
-    case OP_RETURN: {
+    case Op::Type::RETURN: {
         check_function_return_stack();
     } break;
 
-    case OP_FUN:
-    case OP_END:
-    case OP_STRUCT:
-    case OP_DEFINE_VAR:
-    case OP_CONST:
-    case OP_IMPORT:
-    case OP_SET:
-    case OP_READ:
-    case OP_COUNT:
+    case Op::Type::FUN:
+    case Op::Type::END:
+    case Op::Type::STRUCT:
+    case Op::Type::DEFINE_VAR:
+    case Op::Type::CONST:
+    case Op::Type::IMPORT:
+    case Op::Type::SET:
+    case Op::Type::READ:
+    case Op::Type::COUNT:
         print_error_at_loc(op.loc,
                            "unreachable: op should be handled in the parsing "
                            "step. This is probably a bug.");
         exit(1);
         break;
 
-    case OP_SET_PTR_FROM_OTHER_PTR:
-    case OP_SET_VAR_FROM_OTHER_PTR:
+    case Op::Type::SET_PTR_FROM_OTHER_PTR:
+    case Op::Type::SET_VAR_FROM_OTHER_PTR:
         print_error_at_loc(op.loc,
                            "unreachable: op is created in type-checking step and shouldn't be "
                            "passed in to be type-checked. This is probably a bug.");

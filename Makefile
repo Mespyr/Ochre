@@ -9,7 +9,7 @@ LDFLAGS=
 
 SRC_DIRS=src src/lexer src/parser src/type_checker src/compiler src/assembly src/include
 SRC_FILES=$(foreach dir, $(SRC_DIRS), $(wildcard $(dir)/*.cpp))
-HEADERS=$(foreach dir, $(SRC_DIRS), $(wildcard $(dir)/*.hpp))
+HEADERS=$(foreach dir, $(SRC_DIRS), $(wildcard $(dir)/*.h))
 
 OBJ_DIR=obj
 OBJ_FILES=$(foreach dir, $(SRC_DIRS), \
@@ -35,6 +35,7 @@ clean:
 
 # dev formatting
 format: $(SRC_FILES) $(HEADERS)
+	echo $(HEADERS)
 	clang-format -i $(SRC_FILES) $(HEADERS) -style=file
 
 # tests

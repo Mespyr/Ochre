@@ -5,7 +5,7 @@
 
 bool Parser::is_legal_name(Token token_name, bool is_function_name) {
     // if token is an integer or string
-    if (token_name.type == TOKEN_INT || token_name.type == TOKEN_STRING) return false;
+    if (token_name.type == Token::Type::INT || token_name.type == Token::Type::STRING) return false;
     // any illegal characters in names
     if (token_name.value.find('"') != std::string::npos) return false;
     if (token_name.value.find(':') != std::string::npos) return false;
@@ -78,9 +78,9 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
         Op op = convert_token_to_op(tokens.at(i));
 
         switch (op.type) {
-        case OP_PUSH_INT: stack.push_back(op.int_operand); break;
+        case Op::Type::PUSH_INT: stack.push_back(op.int_operand); break;
 
-        case OP_PLUS: {
+        case Op::Type::PLUS: {
             if (stack.size() < 2) {
                 print_not_enough_arguments_error(op.loc, 2, stack.size(), "+", "addition");
                 exit(1);
@@ -92,7 +92,7 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
             stack.push_back(a + b);
         } break;
 
-        case OP_MINUS: {
+        case Op::Type::MINUS: {
             if (stack.size() < 2) {
                 print_not_enough_arguments_error(op.loc, 2, stack.size(), "-", "subtraction");
                 exit(1);
@@ -105,7 +105,7 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
             stack.push_back(b - a);
         } break;
 
-        case OP_MUL: {
+        case Op::Type::MUL: {
             if (stack.size() < 2) {
                 print_not_enough_arguments_error(op.loc, 2, stack.size(), "*", "multiplication");
                 exit(1);
@@ -117,7 +117,7 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
             stack.push_back(a * b);
         } break;
 
-        case OP_DIV: {
+        case Op::Type::DIV: {
             if (stack.size() < 2) {
                 print_not_enough_arguments_error(op.loc, 2, stack.size(), "/", "division");
                 exit(1);
@@ -131,7 +131,7 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
             stack.push_back(b % a);
         } break;
 
-        case OP_POP: {
+        case Op::Type::POP: {
             if (stack.size() < 1) {
                 print_not_enough_arguments_error(op.loc, 1, stack.size(), "pop");
                 exit(1);
@@ -139,7 +139,7 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
             stack.pop_back();
         } break;
 
-        case OP_SWP: {
+        case Op::Type::SWP: {
             if (stack.size() < 2) {
                 print_not_enough_arguments_error(op.loc, 2, stack.size(), "swp");
                 exit(1);
@@ -153,15 +153,15 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
             stack.push_back(b);
         } break;
 
-        case OP_FUN:
-        case OP_CONST:
-        case OP_IMPORT:
-        case OP_STRUCT:
+        case Op::Type::FUN:
+        case Op::Type::CONST:
+        case Op::Type::IMPORT:
+        case Op::Type::STRUCT:
             i--;
             inside_const_def = false;
             break;
 
-        case OP_END:
+        case Op::Type::END:
             print_error_at_loc(op.loc,
                                "unexpected end keyword found in compile-time "
                                "evaluation of expression");

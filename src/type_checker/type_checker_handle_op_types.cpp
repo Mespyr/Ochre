@@ -4,19 +4,19 @@ void TypeChecker::handle_arithmetic_op(Op op) {
     std::string fullname, name;
 
     switch (op.type) {
-    case OP_PLUS:
+    case Op::Type::PLUS:
         fullname = "addition";
         name = "+";
         break;
-    case OP_MINUS:
+    case Op::Type::MINUS:
         fullname = "subtraction";
         name = "-";
         break;
-    case OP_MUL:
+    case Op::Type::MUL:
         fullname = "multiplication";
         name = "*";
         break;
-    case OP_DIV:
+    case Op::Type::DIV:
         fullname = "division";
         name = "/";
         break;
@@ -40,7 +40,7 @@ void TypeChecker::handle_arithmetic_op(Op op) {
 
     if (is_prim_type_int(a) && is_prim_type_int(b)) {
         type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
-        if (op.type == OP_DIV) type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
+        if (op.type == Op::Type::DIV) type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
     } else {
         print_invalid_combination_of_types_error(op.loc, {b, a}, name, fullname);
         print_note_at_loc(b.loc, "first value pushed here (" + human_readable_type(b) + ")");
@@ -53,32 +53,32 @@ void TypeChecker::handle_comparison_op(Op op) {
     std::string fullname = "", name;
 
     switch (op.type) {
-    case OP_EQUAL:
+    case Op::Type::EQUAL:
         fullname = "equal to";
         name = "=";
         break;
-    case OP_GREATER:
+    case Op::Type::GREATER:
         fullname = "greater than";
         name = ">";
         break;
-    case OP_LESS:
+    case Op::Type::LESS:
         fullname = "less than";
         name = "<";
         break;
-    case OP_GREATER_EQ:
+    case Op::Type::GREATER_EQ:
         fullname = "greater than or equal to";
         name = ">=";
         break;
-    case OP_LESS_EQ:
+    case Op::Type::LESS_EQ:
         fullname = "less than or equal to";
         name = "<=";
         break;
-    case OP_NOT_EQ:
+    case Op::Type::NOT_EQ:
         fullname = "not equal to";
         name = "<=";
         break;
-    case OP_AND: name = "and"; break;
-    case OP_OR: name = "or"; break;
+    case Op::Type::AND: name = "and"; break;
+    case Op::Type::OR: name = "or"; break;
     default:
         print_error_at_loc(op.loc,
                            "This is an error in the type checker. Non-comparison opcode was "
@@ -112,33 +112,33 @@ void TypeChecker::handle_syscall_op(Op op) {
     uint8_t     stack_size;
 
     switch (op.type) {
-    case OP_SYSCALL0:
+    case Op::Type::SYSCALL0:
         name = "syscall0";
         stack_size = 1;
         break;
-    case OP_SYSCALL1:
+    case Op::Type::SYSCALL1:
         name = "syscall1";
         stack_size = 2;
         break;
-    case OP_SYSCALL2:
+    case Op::Type::SYSCALL2:
         name = "syscall2";
         stack_size = 3;
         break;
         break;
-    case OP_SYSCALL3:
+    case Op::Type::SYSCALL3:
         name = "syscall3";
         stack_size = 4;
         break;
         break;
-    case OP_SYSCALL4:
+    case Op::Type::SYSCALL4:
         name = "syscall4";
         stack_size = 5;
         break;
-    case OP_SYSCALL5:
+    case Op::Type::SYSCALL5:
         name = "syscall5";
         stack_size = 6;
         break;
-    case OP_SYSCALL6:
+    case Op::Type::SYSCALL6:
         name = "syscall6";
         stack_size = 7;
         break;
@@ -171,24 +171,24 @@ void TypeChecker::handle_jump_op(Op op) {
     std::string fullname, name;
 
     switch (op.type) {
-    case OP_JMP:
-    case OP_JMPE:
+    case Op::Type::JMP:
+    case Op::Type::JMPE:
         jump_op_stack_states.push_back({op, type_stack});
         return;
         break;
-    case OP_CJMPT:
+    case Op::Type::CJMPT:
         name = "cjmpt";
         fullname = "conditional jump if true";
         break;
-    case OP_CJMPF:
+    case Op::Type::CJMPF:
         name = "cjmpf";
         fullname = "conditional jump if false";
         break;
-    case OP_CJMPET:
+    case Op::Type::CJMPET:
         name = "cjmpet";
         fullname = "conditional jump to end if true";
         break;
-    case OP_CJMPEF:
+    case Op::Type::CJMPEF:
         name = "cjmpef";
         fullname = "conditional jump to end if false";
         break;

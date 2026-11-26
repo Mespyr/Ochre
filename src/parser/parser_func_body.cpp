@@ -14,7 +14,7 @@ void Parser::parse_func_body(Function* func) {
         Op f_op = convert_token_to_op(tokens.at(i), func->var_offsets);
 
         switch (f_op.type) {
-        case OP_END: {
+        case Op::Type::END: {
             if (recursion_level == 0) {
                 print_error_at_loc(f_op.loc, "unexpected 'end' keyword found while parsing");
                 exit(1);
@@ -28,13 +28,13 @@ void Parser::parse_func_body(Function* func) {
             label_pair.second = i;
             labels.at(ended_label) = label_pair;
 
-            f_op.type = OP_LABEL_END;
+            f_op.type = Op::Type::LABEL_END;
             f_op.int_operand = label_pair.second;
             f_op.str_operand = ended_label;
             func->ops.push_back(f_op);
         } break;
 
-        case OP_LABEL: {
+        case Op::Type::LABEL: {
             if (labels.count(f_op.str_operand)) {
                 print_error_at_loc(f_op.loc, "redefinition of label '" + f_op.str_operand + "'");
                 exit(1);
@@ -52,7 +52,7 @@ void Parser::parse_func_body(Function* func) {
             func->ops.push_back(f_op);
         } break;
 
-        case OP_DEFINE_VAR: {
+        case Op::Type::DEFINE_VAR: {
             i++;
             if (i >= tokens.size()) break;
             Token var_name_tok = tokens.at(i);
@@ -80,19 +80,19 @@ void Parser::parse_func_body(Function* func) {
             func->memory_capacity += sizeof_type(f_op.str_operand, program.structs);
         } break;
 
-        case OP_SET: {
+        case Op::Type::SET: {
             // if setting a variable
             if (func->var_offsets.count(f_op.str_operand)) {
                 LangType type = func->var_offsets.at(f_op.str_operand).first;
                 if (is_prim_type(type.base_type) || is_pointer(type)) {
                     // 8bit values
-                    if (sizeof_type(type) == 1) f_op.mode = MODE_8BIT;
+                    if (sizeof_type(type) == 1) f_op.mode = Op::Mode::BIT_8;
                     // 64bit values
                     else if (sizeof_type(type) == 8)
-                        f_op.mode = MODE_64BIT;
+                        f_op.mode = Op::Mode::BIT_64;
                 } else
-                    f_op.mode = MODE_STRUCT;
-                f_op.type = OP_SET_VAR;
+                    f_op.mode = Op::Mode::STRUCT;
+                f_op.type = Op::Type::SET_VAR;
                 f_op.int_operand = func->var_offsets.at(f_op.str_operand)
                                        .second;  // offset to location of variable
                 f_op.int_operand_2 =
@@ -105,7 +105,7 @@ void Parser::parse_func_body(Function* func) {
                 if (is_pointer(f_op.str_operand)) {
                     std::pair<std::string, int> type_pair = parse_type_str(f_op.str_operand);
                     if (program.structs.count(type_pair.first) || is_prim_type(type_pair.first))
-                        f_op.mode = MODE_64BIT;
+                        f_op.mode = Op::Mode::BIT_64;
                     else {
                         print_error_at_loc(
                             f_op.loc, "unknown type or variable name '" + f_op.str_operand + "'");
@@ -115,13 +115,13 @@ void Parser::parse_func_body(Function* func) {
                 // if setting primitive type
                 else if (is_prim_type(f_op.str_operand)) {
                     // 8bit values
-                    if (sizeof_type(f_op.str_operand) == 1) f_op.mode = MODE_8BIT;
+                    if (sizeof_type(f_op.str_operand) == 1) f_op.mode = Op::Mode::BIT_8;
                     // 64bit values
                     else if (sizeof_type(f_op.str_operand) == 8)
-                        f_op.mode = MODE_64BIT;
+                        f_op.mode = Op::Mode::BIT_64;
                 } else
-                    f_op.mode = MODE_STRUCT;
-                f_op.type = OP_SET_PTR;
+                    f_op.mode = Op::Mode::STRUCT;
+                f_op.type = Op::Type::SET_PTR;
                 // since setting variable relatively via pointers, there is no
                 // global offset to provide.
                 f_op.int_operand = sizeof_type(f_op.str_operand,
@@ -147,18 +147,18 @@ void Parser::parse_func_body(Function* func) {
                 if (program.structs.count(split_cmd.front())) {
                     std::pair<LangType, int> member_type_offset =
                         struct_member_offset(f_op, program.structs);
-                    f_op.type = OP_SET_PTR_STRUCT_MEMBER;
+                    f_op.type = Op::Type::SET_PTR_STRUCT_MEMBER;
                     if (member_type_offset.first.ptr_to_trace > 0)  // if it is a pointer, whether
                                                                     // to a primitive or a struct
-                        f_op.mode = MODE_64BIT;
+                        f_op.mode = Op::Mode::BIT_64;
                     else if (program.structs.count(member_type_offset.first.base_type))
-                        f_op.mode = MODE_STRUCT;
+                        f_op.mode = Op::Mode::STRUCT;
                     // 8bit values
                     else if (sizeof_type(member_type_offset.first, program.structs) == 1)
-                        f_op.mode = MODE_8BIT;
+                        f_op.mode = Op::Mode::BIT_8;
                     // 64bit values
                     else if (sizeof_type(member_type_offset.first, program.structs) == 8)
-                        f_op.mode = MODE_64BIT;
+                        f_op.mode = Op::Mode::BIT_64;
 
                     f_op.int_operand =
                         member_type_offset.second;  // relative offset of member in pointer
@@ -172,16 +172,16 @@ void Parser::parse_func_body(Function* func) {
                         variable_member_offset(f_op, func->var_offsets, program.structs);
                     if (member_type_offset.first.ptr_to_trace > 0)  // if it is a pointer, whether
                                                                     // to a primitive or a struct
-                        f_op.mode = MODE_64BIT;
+                        f_op.mode = Op::Mode::BIT_64;
                     else if (program.structs.count(member_type_offset.first.base_type))
-                        f_op.mode = MODE_STRUCT;
+                        f_op.mode = Op::Mode::STRUCT;
                     // 8bit values
                     else if (sizeof_type(member_type_offset.first, program.structs) == 1)
-                        f_op.mode = MODE_8BIT;
+                        f_op.mode = Op::Mode::BIT_8;
                     // 64bit values
                     else if (sizeof_type(member_type_offset.first, program.structs) == 8)
-                        f_op.mode = MODE_64BIT;
-                    f_op.type = OP_SET_VAR_STRUCT_MEMBER;
+                        f_op.mode = Op::Mode::BIT_64;
+                    f_op.type = Op::Type::SET_VAR_STRUCT_MEMBER;
                     f_op.int_operand =
                         member_type_offset.second;  // offset to where member is located
                     f_op.int_operand_2 = sizeof_type(member_type_offset.first,
@@ -191,7 +191,7 @@ void Parser::parse_func_body(Function* func) {
             }
         } break;
 
-        case OP_READ: {
+        case Op::Type::READ: {
             // if reading a variable
             if (func->var_offsets.count(f_op.str_operand)) {
                 LangType type = func->var_offsets.at(f_op.str_operand).first;
@@ -204,12 +204,12 @@ void Parser::parse_func_body(Function* func) {
                 }
 
                 // 8bit values
-                if (sizeof_type(type) == 1) f_op.mode = MODE_8BIT;
+                if (sizeof_type(type) == 1) f_op.mode = Op::Mode::BIT_8;
                 // 64bit values
                 else if (sizeof_type(type) == 8)
-                    f_op.mode = MODE_64BIT;
+                    f_op.mode = Op::Mode::BIT_64;
 
-                f_op.type = OP_READ_VAR;
+                f_op.type = Op::Type::READ_VAR;
                 f_op.int_operand = func->var_offsets.at(f_op.str_operand).second;
                 func->ops.push_back(f_op);
             }
@@ -224,12 +224,12 @@ void Parser::parse_func_body(Function* func) {
                 }
 
                 // 8bit values
-                if (sizeof_type(f_op.str_operand) == 1) f_op.mode = MODE_8BIT;
+                if (sizeof_type(f_op.str_operand) == 1) f_op.mode = Op::Mode::BIT_8;
                 // 64bit values
                 else if (sizeof_type(f_op.str_operand) == 8)
-                    f_op.mode = MODE_64BIT;
+                    f_op.mode = Op::Mode::BIT_64;
 
-                f_op.type = OP_READ_PTR;
+                f_op.type = Op::Type::READ_PTR;
                 f_op.int_operand = sizeof_type(f_op.str_operand, program.structs);
                 func->ops.push_back(f_op);
             }
@@ -242,19 +242,19 @@ void Parser::parse_func_body(Function* func) {
                 if (program.structs.count(split_cmd.front())) {
                     std::pair<LangType, int> member_type_offset =
                         struct_member_offset(f_op, program.structs);
-                    f_op.type = OP_READ_PTR_STRUCT_MEMBER;
+                    f_op.type = Op::Type::READ_PTR_STRUCT_MEMBER;
 
                     if (member_type_offset.first.ptr_to_trace > 0)  // if it is a pointer, whether
                                                                     // to a primitive or a struct
-                        f_op.mode = MODE_64BIT;
+                        f_op.mode = Op::Mode::BIT_64;
                     else if (program.structs.count(member_type_offset.first.base_type))
-                        f_op.mode = MODE_STRUCT;
+                        f_op.mode = Op::Mode::STRUCT;
                     // 8bit values
                     else if (sizeof_type(member_type_offset.first, program.structs) == 1)
-                        f_op.mode = MODE_8BIT;
+                        f_op.mode = Op::Mode::BIT_8;
                     // 64bit values
                     else if (sizeof_type(member_type_offset.first, program.structs) == 8)
-                        f_op.mode = MODE_64BIT;
+                        f_op.mode = Op::Mode::BIT_64;
 
                     f_op.int_operand =
                         member_type_offset.second;  // relative offset of member in pointer
@@ -267,17 +267,17 @@ void Parser::parse_func_body(Function* func) {
                         variable_member_offset(f_op, func->var_offsets, program.structs);
                     if (member_type_offset.first.ptr_to_trace > 0)  // if it is a pointer, whether
                                                                     // to a primitive or a struct
-                        f_op.mode = MODE_64BIT;
+                        f_op.mode = Op::Mode::BIT_64;
                     else if (program.structs.count(member_type_offset.first.base_type))
-                        f_op.mode = MODE_STRUCT;
+                        f_op.mode = Op::Mode::STRUCT;
                     // 8bit values
                     else if (sizeof_type(member_type_offset.first, program.structs) == 1)
-                        f_op.mode = MODE_8BIT;
+                        f_op.mode = Op::Mode::BIT_8;
                     // 64bit values
                     else if (sizeof_type(member_type_offset.first, program.structs) == 8)
-                        f_op.mode = MODE_64BIT;
+                        f_op.mode = Op::Mode::BIT_64;
 
-                    f_op.type = OP_READ_VAR_STRUCT_MEMBER;
+                    f_op.type = Op::Type::READ_VAR_STRUCT_MEMBER;
                     f_op.int_operand =
                         member_type_offset.second;  // offset to where member is located
                     f_op.int_operand_2 = sizeof_type(member_type_offset.first, program.structs);
@@ -286,12 +286,12 @@ void Parser::parse_func_body(Function* func) {
             }
         } break;
 
-        case OP_JMP:
-        case OP_JMPE:
-        case OP_CJMPT:
-        case OP_CJMPF:
-        case OP_CJMPET:
-        case OP_CJMPEF: {
+        case Op::Type::JMP:
+        case Op::Type::JMPE:
+        case Op::Type::CJMPT:
+        case Op::Type::CJMPF:
+        case Op::Type::CJMPET:
+        case Op::Type::CJMPEF: {
             i++;
             if (i >= tokens.size()) break;
             Token label_jumpto_tok = tokens.at(i);
@@ -299,20 +299,20 @@ void Parser::parse_func_body(Function* func) {
             func->ops.push_back(f_op);
         } break;
 
-        case OP_PUSH_VAR: {
+        case Op::Type::PUSH_VAR: {
             f_op.int_operand = func->var_offsets.at(f_op.str_operand).second;
             func->ops.push_back(f_op);
         } break;
 
-        case OP_PUSH_TYPE_INSTANCE: {
+        case Op::Type::PUSH_TYPE_INSTANCE: {
             f_op.int_operand = sizeof_type(f_op.str_operand, program.structs) * f_op.int_operand;
             func->ops.push_back(f_op);
         } break;
 
-        case OP_FUN:
-        case OP_STRUCT:
-        case OP_IMPORT:
-        case OP_CONST: inside_function = false; break;
+        case Op::Type::FUN:
+        case Op::Type::STRUCT:
+        case Op::Type::IMPORT:
+        case Op::Type::CONST: inside_function = false; break;
 
         default: func->ops.push_back(f_op); break;
         };

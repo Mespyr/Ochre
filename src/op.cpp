@@ -1,19 +1,12 @@
 #include "include/op.h"
 
 bool Op::is_prim_type_mode() {
-    if (mode == MODE_8BIT || mode == MODE_64BIT) return true;
+    if (mode == Op::Mode::BIT_8 || mode == Op::Mode::BIT_64) return true;
     return false;
 }
 
 bool is_builtin_word(std::string word) {
-    static_assert(OP_COUNT == 62, "unhandled op types in is_builtin_word()");
-    std::vector<std::string> builtin_words = {
-        "dump",  "+",    "-",      "*",      "/",      "=",      ">",     "<",
-        ">=",    "<=",   "!=",     "and",    "or",  "not",   "pop",    "dup",   "swp",
-        "rot",   "over", "call0",  "call1",  "call2",  "call3",  "call4", "call5",
-        "call6", "fun",  "const",  "end",    "struct", "import", "jmp",   "cjmpt",
-        "cjmpf", "jmpe", "cjmpet", "cjmpef", "delete", "argv",   "return"};
-    for (std::string w : builtin_words)
-        if (w == word) return true;
-    return false;
+    static_assert(std::to_underlying(Op::Type::COUNT) == 62,
+                  "unhandled op types in is_builtin_word()");
+    return Op::symbols_map.count(word);
 };

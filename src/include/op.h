@@ -1,133 +1,145 @@
 #pragma once
 
+#include <assert.h>
+
 #include <cstdint>
 #include <string>
+#include <unordered_map>
+#include <utility>
 #include <vector>
-#include <assert.h>
+
 #include "location.h"
 #include "token.h"
 
-enum OpCodeMode {
-	MODE_8BIT,
-	MODE_64BIT,
-	MODE_STRUCT,
-};
-
-enum OpType {
-	// debugging
-	OP_DUMP,
-	// arithmetics
-	OP_PLUS,
-	OP_MINUS,
-	OP_MUL,
-	OP_DIV,
-	// comparisons
-	OP_EQUAL,
-	OP_GREATER,
-	OP_LESS,
-	OP_GREATER_EQ,
-	OP_LESS_EQ,
-	OP_NOT_EQ,
-	OP_AND,
-	OP_OR,
-	OP_NOT,
-	// stack manipulation
-	OP_POP,
-	OP_DUP,  // [a] -> [a, a]
-	OP_SWP,  // [a, b] -> [b, a]
-	OP_ROT,  // [a, b, c] -> [b, c, a]
-	OP_OVER, // [a, b] -> [a, b a]
-	// keywords
-	OP_FUN,
-	OP_END,
-	OP_STRUCT,
-	OP_CONST,
-	OP_IMPORT,
-	// variables
-	OP_DEFINE_VAR,
-	OP_SET,
-	OP_READ,
-
-	OP_SET_VAR,
-	OP_SET_VAR_FROM_OTHER_PTR,
-	OP_SET_VAR_STRUCT_MEMBER,
-	OP_READ_VAR,
-	OP_READ_VAR_STRUCT_MEMBER,
-	OP_PUSH_VAR,
-
-	OP_SET_PTR,
-	OP_SET_PTR_FROM_OTHER_PTR,
-	OP_SET_PTR_STRUCT_MEMBER,
-	OP_READ_PTR,
-	OP_READ_PTR_STRUCT_MEMBER,
-
-	// syscalls
-	OP_SYSCALL0,
-	OP_SYSCALL1,
-	OP_SYSCALL2,
-	OP_SYSCALL3,
-	OP_SYSCALL4,
-	OP_SYSCALL5,
-	OP_SYSCALL6,
-	// labels
-	OP_LABEL,
-	OP_LABEL_END,
-	OP_JMP,
-	OP_CJMPT,
-	OP_CJMPF,
-	OP_JMPE,
-	OP_CJMPET,
-	OP_CJMPEF,
-	// other
-	OP_PUSH_INT,
-	OP_PUSH_CHAR,
-	OP_PUSH_STR,
-	OP_PUSH_ARGV,
-	OP_PUSH_TYPE_INSTANCE,
-	OP_DELETE_PTR,
-	OP_TYPE_CAST,
-	OP_FUNCTION_CALL,
-	OP_RETURN,
-	// count | must always be last
-	OP_COUNT
-};
-
 class Op {
-public:
-	Op(Location loc, OpType type) :
-		loc(loc),
-		type(type)
-	{}
+  public:
+    enum class Mode {
+        BIT_8,
+        BIT_64,
+        STRUCT,
+    };
 
-	Op(Location loc, OpType type, int64_t int_operand) :
-		loc(loc),
-		type(type),
-		int_operand(int_operand)
-	{}
+    enum class Type {
+        // debugging
+        DUMP,
+        // arithmetics
+        PLUS,
+        MINUS,
+        MUL,
+        DIV,
+        // comparisons
+        EQUAL,
+        GREATER,
+        LESS,
+        GREATER_EQ,
+        LESS_EQ,
+        NOT_EQ,
+        AND,
+        OR,
+        NOT,
+        // stack manipulation
+        POP,
+        DUP,   // [a] -> [a, a]
+        SWP,   // [a, b] -> [b, a]
+        ROT,   // [a, b, c] -> [b, c, a]
+        OVER,  // [a, b] -> [a, b a]
+        // keywords
+        FUN,
+        END,
+        STRUCT,
+        CONST,
+        IMPORT,
+        // variables
+        DEFINE_VAR,
+        SET,
+        READ,
 
-	Op(Location loc, OpType type, std::string str_operand) :
-		loc(loc),
-		type(type),
-		str_operand(str_operand)
-	{}
+        SET_VAR,
+        SET_VAR_FROM_OTHER_PTR,
+        SET_VAR_STRUCT_MEMBER,
+        READ_VAR,
+        READ_VAR_STRUCT_MEMBER,
+        PUSH_VAR,
 
-	Op(Location loc, OpType type, int64_t int_operand, std::string str_operand) :
-		loc(loc),
-		type(type),
-		int_operand(int_operand),
-		str_operand(str_operand)
-	{}
+        SET_PTR,
+        SET_PTR_FROM_OTHER_PTR,
+        SET_PTR_STRUCT_MEMBER,
+        READ_PTR,
+        READ_PTR_STRUCT_MEMBER,
 
+        // syscalls
+        SYSCALL0,
+        SYSCALL1,
+        SYSCALL2,
+        SYSCALL3,
+        SYSCALL4,
+        SYSCALL5,
+        SYSCALL6,
+        // labels
+        LABEL,
+        LABEL_END,
+        JMP,
+        CJMPT,
+        CJMPF,
+        JMPE,
+        CJMPET,
+        CJMPEF,
+        // other
+        PUSH_INT,
+        PUSH_CHAR,
+        PUSH_STR,
+        PUSH_ARGV,
+        PUSH_TYPE_INSTANCE,
+        DELETE_PTR,
+        TYPE_CAST,
+        FUNCTION_CALL,
+        RETURN,
+        // count | must always be last
+        COUNT
+    };
 
-	bool is_prim_type_mode();
+    static inline const std::unordered_map<std::string, Type> symbols_map = {
+        {"dump", Type::DUMP},      {"+", Type::PLUS},
+        {"-", Type::MINUS},        {"*", Type::MUL},
+        {"/", Type::DIV},          {"=", Type::EQUAL},
+        {">", Type::GREATER},      {"<", Type::LESS},
+        {">=", Type::GREATER_EQ},  {"<=", Type::LESS_EQ},
+        {"!=", Type::NOT_EQ},      {"and", Type::AND},
+        {"or", Type::OR},          {"not", Type::NOT},
+        {"pop", Type::POP},        {"dup", Type::DUP},
+        {"swp", Type::SWP},        {"rot", Type::ROT},
+        {"over", Type::OVER},      {"call0", Type::SYSCALL0},
+        {"call1", Type::SYSCALL1}, {"call2", Type::SYSCALL2},
+        {"call3", Type::SYSCALL3}, {"call4", Type::SYSCALL4},
+        {"call5", Type::SYSCALL5}, {"call6", Type::SYSCALL6},
+        {"fun", Type::FUN},        {"const", Type::CONST},
+        {"end", Type::END},        {"struct", Type::STRUCT},
+        {"import", Type::IMPORT},  {"jmp", Type::JMP},
+        {"cjmpt", Type::CJMPT},    {"cjmpf", Type::CJMPF},
+        {"jmpe", Type::JMPE},      {"cjmpet", Type::CJMPET},
+        {"cjmpef", Type::CJMPEF},  {"delete", Type::DELETE_PTR},
+        {"argv", Type::PUSH_ARGV}, {"return", Type::RETURN}};
 
-	Location loc;
-	OpType type;
+    Op(Location loc, Type type) : loc(loc), type(type) {}
 
-	int64_t int_operand;
-	int64_t int_operand_2;
-	std::string str_operand;
-	OpCodeMode mode;
+    Op(Location loc, Type type, int64_t int_operand)
+        : loc(loc), type(type), int_operand(int_operand) {}
+
+    Op(Location loc, Type type, std::string str_operand)
+        : loc(loc), type(type), str_operand(str_operand) {}
+
+    Op(Location loc, Type type, int64_t int_operand, std::string str_operand)
+        : loc(loc), type(type), int_operand(int_operand), str_operand(str_operand) {}
+
+    bool is_prim_type_mode();
+
+    Location loc;
+    Type     type;
+
+    int64_t     int_operand;
+    int64_t     int_operand_2;
+    std::string str_operand;
+    Mode        mode;
 };
 
 bool is_builtin_word(std::string word);

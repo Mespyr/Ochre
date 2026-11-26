@@ -26,7 +26,7 @@ void Lexer::tokenize_line() {
 
             tokens.push_back(Token(
                 line.substr(column_number_start, column_number_end - column_number_start),
-                TOKEN_STRING,
+                Token::Type::STRING,
                 Location(line_number, column_number_start, column_number_end, line, filename)));
 
         }
@@ -62,14 +62,14 @@ void Lexer::tokenize_line() {
             column_number_end++;
             tokens.push_back(Token(
                 line.substr(column_number_start, column_number_end - column_number_start),
-                TOKEN_CHAR,
+                Token::Type::CHAR,
                 Location(line_number, column_number_start, column_number_end, line, filename)));
 
         }
         // if token is any of these chars ()[]
         else if (line.at(column_number_start) == '(' || line.at(column_number_start) == ')' ||
                  line.at(column_number_start) == '[' || line.at(column_number_start) == ']') {
-            tokens.push_back(Token(line.substr(column_number_start, 1), TOKEN_WORD,
+            tokens.push_back(Token(line.substr(column_number_start, 1), Token::Type::WORD,
                                    Location(line_number, column_number_start,
                                             column_number_start + 1, line, filename)));
             // one after the char
@@ -79,8 +79,8 @@ void Lexer::tokenize_line() {
 
             std::string token_str =
                 line.substr(column_number_start, column_number_end - column_number_start);
-            TokenType token_type = TOKEN_WORD;
-            if (is_number(token_str)) token_type = TOKEN_INT;
+            Token::Type token_type = Token::Type::WORD;
+            if (is_number(token_str)) token_type = Token::Type::INT;
 
             tokens.push_back(Token(
                 token_str, token_type,

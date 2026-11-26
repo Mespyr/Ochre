@@ -1,25 +1,16 @@
 #pragma once
 
 #include <string>
+
 #include "location.h"
 
-enum TokenType {
-	TOKEN_WORD,
-	TOKEN_INT,
-	TOKEN_CHAR,
-	TOKEN_STRING,
-	TOKEN_TYPE_COUNT
-};
-
 class Token {
-public:
-	Token(std::string value, TokenType type, Location loc) :
-		value(value),
-		type(type),
-		loc(loc)
-	{}
+  public:
+    enum class Type { WORD, INT, CHAR, STRING, COUNT };
 
-	std::string value;
-	TokenType type;
-	Location loc;
+    Token(std::string value, Type type, Location loc) : value(value), type(type), loc(loc) {}
+
+    std::string value;
+    Type        type;
+    Location    loc;
 };

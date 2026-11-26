@@ -37,7 +37,7 @@ Instruction AssemblyProgram::inst_movzx(Argument arg1, Argument arg2) {
 }
 
 Instruction AssemblyProgram::inst_sete(Argument arg) {
-	return inst_1_arity_backend(INSTRUCTION_SETE, arg);
+    return inst_1_arity_backend(INSTRUCTION_SETE, arg);
 }
 
 Instruction AssemblyProgram::inst_add(Argument arg1, Argument arg2) {
