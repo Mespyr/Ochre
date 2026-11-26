@@ -37,7 +37,7 @@ Op Parser::convert_token_to_op(Token                                           t
                 return Op(tok.loc, Op::Type::PUSH_TYPE_INSTANCE, program.consts.at(amount).value,
                           new_push_struct_name);
             // if the value is a number
-            if (lexer->is_number(amount)) {
+            if (is_number(amount)) {
                 return Op(tok.loc, Op::Type::PUSH_TYPE_INSTANCE, atol(amount.c_str()),
                           new_push_struct_name);
             }

@@ -6,7 +6,7 @@ void Lexer::set_file(std::string filename) {
     tokens.clear();
 }
 
-bool Lexer::is_number(std::string n) {
+bool is_number(std::string n) {
     if (n.at(0) == '-') n = n.substr(1);
 
     std::string::const_iterator it = n.begin();

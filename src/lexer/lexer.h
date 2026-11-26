@@ -19,9 +19,6 @@ class Lexer {
     void set_file(std::string filename);
     void tokenize();
 
-    // useful in the parser
-    bool is_number(std::string n);
-
   private:
     std::string filename;
     std::string line;
@@ -32,3 +29,6 @@ class Lexer {
     uint64_t find_string_end_col(uint64_t column_number);
     void     tokenize_line();
 };
+
+// util
+bool is_number(std::string n);
