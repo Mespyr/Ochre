@@ -342,9 +342,13 @@ void TypeChecker::check_op() {
     case Op::Type::CJMPET:
     case Op::Type::CJMPEF: handle_jump_op(op); break;
 
-    case Op::Type::PUSH_INT: type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0)); break;
+    case Op::Type::PUSH_INT:
+        type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
+        break;
 
-    case Op::Type::PUSH_CHAR: type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_CHAR), 0)); break;
+    case Op::Type::PUSH_CHAR:
+        type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_CHAR), 0));
+        break;
 
     case Op::Type::PUSH_STR:
         type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));

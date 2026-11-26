@@ -371,7 +371,8 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
     case Op::Type::SET:
     case Op::Type::STRUCT:
     case Op::Type::COUNT:
-        print_error_at_loc(op.loc, "compiler error! this opcode (" + std::to_string(std::to_underlying(op.type)) +
+        print_error_at_loc(op.loc, "compiler error! this opcode (" +
+                                       std::to_string(std::to_underlying(op.type)) +
                                        ") shouldn't be passed into compiling stage");
         exit(1);
     }

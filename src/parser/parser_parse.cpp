@@ -53,7 +53,7 @@ void Parser::parse() {
 
             std::string file_path =
                 include_file_token.value.substr(1, include_file_token.value.length() - 2);
-            File file(file_path, FileMode::READ);
+            File file(file_path, File::Mode::READ);
             if (!file.exists()) {
                 print_error_at_loc(include_file_token.loc,
                                    "No such file or directory, '" + file_path + "'");

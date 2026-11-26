@@ -36,7 +36,8 @@ void Compiler::handle_copy_ptr_to_ptr(Op op) {
         asmp.new_inst(asmp.inst_mov(Argument(REGISTER_RAX, true), Argument(REGISTER_RCX)));
         break;
     case Op::Mode::STRUCT:
-        print_error_at_loc(op.loc, "compiler error! this opcode (" + std::to_string(std::to_underlying(op.type)) +
+        print_error_at_loc(op.loc, "compiler error! this opcode (" +
+                                       std::to_string(std::to_underlying(op.type)) +
                                        ") should not have Op::Mode::STRUCT passed into it. This is "
                                        "probably a bug in the parsing or type-checking stage");
         exit(1);

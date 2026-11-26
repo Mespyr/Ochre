@@ -1,9 +1,9 @@
 #include "include/file.h"
 
-File::File(std::string filename, FileMode mode) {
+File::File(std::string filename, File::Mode mode) {
     switch (mode) {
-    case FileMode::WRITE: file.open(filename, std::ios::out); break;
-    case FileMode::READ: file.open(filename, std::ios::in); break;
+    case File::Mode::WRITE: file.open(filename, std::ios::out); break;
+    case File::Mode::READ: file.open(filename, std::ios::in); break;
     }
 }
 

@@ -4,11 +4,11 @@
 #include <iostream>
 #include <string>
 
-enum class FileMode { READ, WRITE };
-
 class File {
   public:
-    File(std::string filename, FileMode mode);
+    enum class Mode { READ, WRITE };
+
+    File(std::string filename, Mode mode);
     ~File();
     bool operator==(bool t);
 

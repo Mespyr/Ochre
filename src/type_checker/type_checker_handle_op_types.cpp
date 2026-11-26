@@ -40,7 +40,8 @@ void TypeChecker::handle_arithmetic_op(Op op) {
 
     if (is_prim_type_int(a) && is_prim_type_int(b)) {
         type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
-        if (op.type == Op::Type::DIV) type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
+        if (op.type == Op::Type::DIV)
+            type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
     } else {
         print_invalid_combination_of_types_error(op.loc, {b, a}, name, fullname);
         print_note_at_loc(b.loc, "first value pushed here (" + human_readable_type(b) + ")");

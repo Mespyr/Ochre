@@ -93,7 +93,7 @@ void Lexer::tokenize_line() {
 }
 
 void Lexer::tokenize() {
-    File file(filename, FileMode::READ);
+    File file(filename, File::Mode::READ);
     if (!file.exists()) {
         print_error("couldn't open file '" + filename + "': " + strerror(errno));
         exit(1);
