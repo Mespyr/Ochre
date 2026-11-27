@@ -1,5 +1,6 @@
 # CHANGELOG
 - Fix bug where consecutive move instructions was being collapsed at the wrong places, resulting in code crashing or unexpected output. 
+- Fix bug where error messages pertaining to data on the stack pushed by a function would note where they exists in the function definition rather than the specific call which pushed them onto the stack inside the function.
 - Make the number of optimization passes non-fixed, based on whether modifications in the previous pass were made, stopping only when no changes are made in a pass.
 - Examples: add Brainf*ck interpretor to showcase larger project potential
 - Add 'not' keyword to flip 'boolean' values (non-zero integers to zero).

@@ -413,7 +413,10 @@ void TypeChecker::check_op() {
             exit(1);
         }
 
-        for (LangType t : call_func.signature.return_stack) type_stack.push_back(t);
+        for (LangType t : call_func.signature.return_stack) {
+			t.loc = op.loc;
+			type_stack.push_back(t);
+		}
     } break;
 
     case Op::Type::RETURN: {
