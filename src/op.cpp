@@ -5,8 +5,4 @@ bool Op::is_prim_type_mode() {
     return false;
 }
 
-bool is_builtin_word(std::string word) {
-    static_assert(std::to_underlying(Op::Type::COUNT) == 62,
-                  "unhandled op types in is_builtin_word()");
-    return Op::symbols_map.count(word);
-};
+bool is_builtin_word(std::string word) { return Op::symbols_map.count(word); };

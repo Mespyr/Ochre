@@ -4,7 +4,8 @@
 - Examples: add Brainf*ck interpretor to showcase larger project potential
 - Add 'not' keyword to flip 'boolean' values (non-zero integers to zero).
 - Change primitive types to be more strict, with Char (characters) needing to be cast to Int (integer) type for arithmetic and logical code.
-- Cleanup organization of op-codes to make syntactical name changes easier and more consistent to implement.
+- Remove 'end' keyword to keep language design constistent and stay away from block syntax structures.
+- Remove unused keywords resulting from changes (jmpe, cjmpet, cjmpef)
 
 ### v0.2.1 Release Notes (2026-10-13)
 - Optimize chained 'mov' instructions to reduce them down to a single instruction

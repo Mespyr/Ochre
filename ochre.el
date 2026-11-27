@@ -7,11 +7,11 @@
     (syntax-table)))
 
 (defconst ochre-keywords
-  '("fun" "struct" "const" "end" "import" "return"))
+  '("fun" "struct" "const" "import" "return"))
 
 (defconst ochre-funcs '("cast" "delete" "call0" "call1" "call2" "call3" "call4" "call5" "call6" "dump" "argv"))
 
-(defconst ochre-builtin '("jmp" "cjmpt" "cjmpf" "jmpe"  "cjmpet" "cjmpef"))
+(defconst ochre-builtin '("jmp" "cjmpt" "cjmpf"))
 
 (defconst ochre-types
   '("Int" "Char"))

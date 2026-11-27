@@ -2,7 +2,7 @@
 
 Op Parser::convert_token_to_op(Token                                           tok,
                                std::map<std::string, std::pair<LangType, int>> var_offsets) {
-    static_assert(std::to_underlying(Op::Type::COUNT) == 62,
+    static_assert(std::to_underlying(Op::Type::COUNT) == 57,
                   "unhandled op types in Parser::convert_token_to_op()");
 
     if (tok.type == Token::Type::WORD) {

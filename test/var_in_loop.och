@@ -2,7 +2,7 @@ fun main()
 	loop:
 		Int x
 		&x 10 + @x
-		&x 1000 >= cjmpet loop
+		&x 1000 >= cjmpt end_loop
 		&x dump
 		jmp loop
-	end
+	end_loop:

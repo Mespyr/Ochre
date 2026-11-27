@@ -65,7 +65,7 @@ class Argument {
     Type        type;
     std::string var_value;
     int64_t     int_value;
-    Register reg_value;
+    Register    reg_value;
 
     int64_t add_amount;
 

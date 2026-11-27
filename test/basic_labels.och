@@ -1,12 +1,13 @@
 fun main()
-	jmpe label
+	jmp label2
 
 	label:
 		12 13 + dump
-		jmp endlabel	
-	end
+		jmp endlabel
+
+	label2:
 	34 35 + dump
 
 	jmp label
 
-	endlabel: end
+	endlabel:

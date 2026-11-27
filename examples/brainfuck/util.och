@@ -2,3 +2,19 @@ fun modulo(Int Int) [Int] / swp pop
 
 fun get_char_at_idx(^Char Int) [Char]
   swp cast:Int + cast:^Char &Char
+
+struct String
+  Int size
+  ^Char data
+
+fun String.new(Int ^Char) [^String]
+  <String> swp over @String.data
+  swp over @String.size
+
+struct Memory
+  Int data_raw
+
+fun alloc(Int) [^Memory]
+  Int size @size
+  0 -1 33 3 &size 0 9 call6
+  cast:^Memory

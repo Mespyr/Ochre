@@ -53,7 +53,7 @@ class Compiler {
     AssemblyProgram asmp;
 
     std::map<Register, int64_t> stored_registers;
-    uint32_t                       idx = 0;
-    uint32_t                       number_of_changes = std::numeric_limits<uint32_t>::max();
+    uint32_t                    idx = 0;
+    uint32_t                    number_of_changes = std::numeric_limits<uint32_t>::max();
     std::pair<std::string, std::vector<Instruction>> fn_key;
 };

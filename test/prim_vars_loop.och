@@ -5,10 +5,10 @@ fun main()
 	# count down
 	loop:
 		&count dump
-		&count 0 = cjmpet loop
+		&count 0 = cjmpt end_loop
 
 		&count 1 - @count
 		jmp loop
-	end
+	end_loop:
 
 	"Done!\n" 1 1 call3 pop

@@ -45,7 +45,6 @@ class Op {
         OVER,  // [a, b] -> [a, b a]
         // keywords
         FUN,
-        END,
         STRUCT,
         CONST,
         IMPORT,
@@ -77,13 +76,9 @@ class Op {
         SYSCALL6,
         // labels
         LABEL,
-        LABEL_END,
         JMP,
         CJMPT,
         CJMPF,
-        JMPE,
-        CJMPET,
-        CJMPEF,
         // other
         PUSH_INT,
         PUSH_CHAR,
@@ -98,6 +93,8 @@ class Op {
         COUNT
     };
 
+    static_assert(std::to_underlying(Op::Type::COUNT) == 57,
+                  "unhandled op types in Op::symbols_map");
     static inline const std::unordered_map<std::string, Type> symbols_map = {
         {"dump", Type::DUMP},      {"+", Type::PLUS},
         {"-", Type::MINUS},        {"*", Type::MUL},
@@ -113,11 +110,9 @@ class Op {
         {"call3", Type::SYSCALL3}, {"call4", Type::SYSCALL4},
         {"call5", Type::SYSCALL5}, {"call6", Type::SYSCALL6},
         {"fun", Type::FUN},        {"const", Type::CONST},
-        {"end", Type::END},        {"struct", Type::STRUCT},
-        {"import", Type::IMPORT},  {"jmp", Type::JMP},
-        {"cjmpt", Type::CJMPT},    {"cjmpf", Type::CJMPF},
-        {"jmpe", Type::JMPE},      {"cjmpet", Type::CJMPET},
-        {"cjmpef", Type::CJMPEF},  {"delete", Type::DELETE_PTR},
+        {"struct", Type::STRUCT},  {"import", Type::IMPORT},
+        {"jmp", Type::JMP},        {"cjmpt", Type::CJMPT},
+        {"cjmpf", Type::CJMPF},    {"delete", Type::DELETE_PTR},
         {"argv", Type::PUSH_ARGV}, {"return", Type::RETURN}};
 
     Op(Location loc, Type type) : loc(loc), type(type) {}

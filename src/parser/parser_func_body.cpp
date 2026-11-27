@@ -1,53 +1,40 @@
-#include <error.h>
-
-#include <cstdlib>
-
 #include "parser.h"
 
+std::vector<Op> Parser::link_ops(std::vector<Op> ops, std::map<std::string, uint64_t> labels) {
+    for (uint64_t i = 0; i < ops.size(); i++) {
+        Op current_op = ops.at(i);
+
+        if (current_op.type == Op::Type::JMP || current_op.type == Op::Type::CJMPF ||
+            current_op.type == Op::Type::CJMPT) {
+            if (labels.count(current_op.str_operand)) {
+                current_op.int_operand = labels.at(current_op.str_operand);
+                ops.at(i) = current_op;
+            } else {
+                print_error_at_loc(current_op.loc,
+                                   "label '" + current_op.str_operand + "' not found");
+                exit(1);
+            }
+        }
+    }
+
+    return ops;
+}
+
 void Parser::parse_func_body(Function* func) {
-    std::map<std::string, std::pair<int, int>> labels;
-    int                                        recursion_level = 0;
-    std::vector<std::string>                   recursion_stack;
-    bool                                       inside_function = true;
+    std::map<std::string, uint64_t> labels;
+    bool                            inside_function = true;
 
     while (inside_function) {
         Op f_op = convert_token_to_op(tokens.at(i), func->var_offsets);
 
         switch (f_op.type) {
-        case Op::Type::END: {
-            if (recursion_level == 0) {
-                print_error_at_loc(f_op.loc, "unexpected 'end' keyword found while parsing");
-                exit(1);
-            }
-            recursion_level--;
-            std::string ended_label = recursion_stack.back();
-            recursion_stack.pop_back();
-
-            // set second idx to end of label
-            std::pair<int, int> label_pair = labels.at(ended_label);
-            label_pair.second = i;
-            labels.at(ended_label) = label_pair;
-
-            f_op.type = Op::Type::LABEL_END;
-            f_op.int_operand = label_pair.second;
-            f_op.str_operand = ended_label;
-            func->ops.push_back(f_op);
-        } break;
-
         case Op::Type::LABEL: {
             if (labels.count(f_op.str_operand)) {
                 print_error_at_loc(f_op.loc, "redefinition of label '" + f_op.str_operand + "'");
                 exit(1);
             }
-            std::string         label_name = f_op.str_operand;
-            std::pair<int, int> start_and_end_idxs;
-            start_and_end_idxs.first = i;
-            labels.insert({f_op.str_operand, start_and_end_idxs});
-
-            // increase recursion
-            recursion_level++;
-            recursion_stack.push_back(f_op.str_operand);
-
+            std::string label_name = f_op.str_operand;
+            labels.insert({f_op.str_operand, i});
             f_op.int_operand = i;
             func->ops.push_back(f_op);
         } break;
@@ -287,11 +274,8 @@ void Parser::parse_func_body(Function* func) {
         } break;
 
         case Op::Type::JMP:
-        case Op::Type::JMPE:
         case Op::Type::CJMPT:
-        case Op::Type::CJMPF:
-        case Op::Type::CJMPET:
-        case Op::Type::CJMPEF: {
+        case Op::Type::CJMPF: {
             i++;
             if (i >= tokens.size()) break;
             Token label_jumpto_tok = tokens.at(i);
@@ -322,13 +306,7 @@ void Parser::parse_func_body(Function* func) {
         else
             i++;
 
-        if (i >= tokens.size()) {
-            if (recursion_level > 0) {
-                print_error_at_loc(tokens.back().loc, "unexpected EOF while parsing");
-                exit(1);
-            }
-            inside_function = false;
-        }
+        if (i >= tokens.size()) inside_function = false;
     }
     func->ops = link_ops(func->ops, labels);
 };

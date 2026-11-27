@@ -19,17 +19,17 @@ fun display(^Rectangle)
 	Rectangle r @r
 	0 height_loop:
 		# if not less than the height
-		dup &r.height < cjmpef height_loop
+		dup &r.height < cjmpf end_height_loop
 
 		0 row_loop:
-			dup &r.width <= cjmpef row_loop
+			dup &r.width <= cjmpf end_row_loop
 			"+" print
 			1 + jmp row_loop
-		end pop
+		end_row_loop: pop
 		"\n" print
 	
 		1 + jmp height_loop
-	end pop
+	end_height_loop: pop
 
 fun area(^Rectangle) [Int]
 	dup &Rectangle.width swp &Rectangle.height *

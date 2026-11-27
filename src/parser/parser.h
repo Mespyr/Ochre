@@ -25,7 +25,7 @@ class Parser {
     Lexer                   *lexer;
     std::vector<Token>       tokens;
     uint64_t                 i = 0;
-    int                      function_addr = 0;
+    uint64_t                 function_addr = 0;
     std::vector<std::string> include_paths;
 
     bool        is_legal_name(Token token_name, bool is_function_name = false);
@@ -35,8 +35,7 @@ class Parser {
 
     Op convert_token_to_op(Token                                           tok,
                            std::map<std::string, std::pair<LangType, int>> var_offsets = {});
-    std::vector<Op>   link_ops(std::vector<Op>                            ops,
-                               std::map<std::string, std::pair<int, int>> labels);
+    std::vector<Op>   link_ops(std::vector<Op> ops, std::map<std::string, uint64_t> labels);
     void              parse_function(Op current_op);
     void              parse_struct(Op current_op);
     FunctionSignature parse_func_signature();

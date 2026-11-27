@@ -19,9 +19,9 @@ fun main()
   65 loop:
     swp over add_and_inc
 	swp 1 +
-	dup 91 = cjmpet loop
-	jmp loop
-  end pop pop
+	dup 91 = not
+	cjmpt loop
+  pop pop
 
   26 &chars print
   &chars delete

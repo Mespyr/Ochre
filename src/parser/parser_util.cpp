@@ -161,12 +161,6 @@ int64_t Parser::eval_const_expression(Location definition_loc) {
             inside_const_def = false;
             break;
 
-        case Op::Type::END:
-            print_error_at_loc(op.loc,
-                               "unexpected end keyword found in compile-time "
-                               "evaluation of expression");
-            exit(1);
-
         default:
             print_error_at_loc(op.loc,
                                "unsuppored keyword in compile-time evaluation of expression");

@@ -173,7 +173,6 @@ void TypeChecker::handle_jump_op(Op op) {
 
     switch (op.type) {
     case Op::Type::JMP:
-    case Op::Type::JMPE:
         jump_op_stack_states.push_back({op, type_stack});
         return;
         break;
@@ -184,14 +183,6 @@ void TypeChecker::handle_jump_op(Op op) {
     case Op::Type::CJMPF:
         name = "cjmpf";
         fullname = "conditional jump if false";
-        break;
-    case Op::Type::CJMPET:
-        name = "cjmpet";
-        fullname = "conditional jump to end if true";
-        break;
-    case Op::Type::CJMPEF:
-        name = "cjmpef";
-        fullname = "conditional jump to end if false";
         break;
     default:
         print_error_at_loc(op.loc,

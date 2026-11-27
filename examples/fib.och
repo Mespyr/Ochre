@@ -4,7 +4,6 @@ fun fibonacci(Int) [Int]
   recursion:
     dup 1 - fibonacci
     swp 2 - fibonacci +
-  end
 
 fun main()
   40 fibonacci dump

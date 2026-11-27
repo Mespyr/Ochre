@@ -326,21 +326,9 @@ void TypeChecker::check_op() {
 
     case Op::Type::LABEL: label_stack_states.insert({op.str_operand, type_stack}); break;
 
-    case Op::Type::LABEL_END:
-        if (!compare_type_stacks(type_stack, label_stack_states.at(op.str_operand))) {
-            print_error_at_loc(op.loc,
-                               "different types on stack before and after label definition. "
-                               "types of items on stack must be the same.");
-            exit(1);
-        }
-        break;
-
     case Op::Type::JMP:
-    case Op::Type::JMPE:
     case Op::Type::CJMPT:
-    case Op::Type::CJMPF:
-    case Op::Type::CJMPET:
-    case Op::Type::CJMPEF: handle_jump_op(op); break;
+    case Op::Type::CJMPF: handle_jump_op(op); break;
 
     case Op::Type::PUSH_INT:
         type_stack.push_back(LangType(op.loc, prim_type_name(TYPE_INT), 0));
@@ -433,7 +421,6 @@ void TypeChecker::check_op() {
     } break;
 
     case Op::Type::FUN:
-    case Op::Type::END:
     case Op::Type::STRUCT:
     case Op::Type::DEFINE_VAR:
     case Op::Type::CONST:

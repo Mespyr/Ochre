@@ -14,10 +14,10 @@ void Compiler::handle_write_data_to_ptr(Op op) {
         asmp.new_inst(asmp.inst_mov(Argument(Register::RCX), Argument(Register::RBX, true)));
         asmp.new_inst(asmp.inst_mov(Argument(Register::RAX, true), Argument(Register::RCX)));
         for (int i = 8; i < op.int_operand_2; i += 8) {
-            asmp.new_inst(
-                asmp.inst_mov(Argument(Register::RCX), Argument(Register::RBX, true, INFER_NONE, i)));
-            asmp.new_inst(
-                asmp.inst_mov(Argument(Register::RAX, true, INFER_NONE, i), Argument(Register::RCX)));
+            asmp.new_inst(asmp.inst_mov(Argument(Register::RCX),
+                                        Argument(Register::RBX, true, INFER_NONE, i)));
+            asmp.new_inst(asmp.inst_mov(Argument(Register::RAX, true, INFER_NONE, i),
+                                        Argument(Register::RCX)));
         }
     } break;
     };

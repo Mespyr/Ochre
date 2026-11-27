@@ -1,32 +1,5 @@
 #include "parser.h"
 
-std::vector<Op> Parser::link_ops(std::vector<Op>                            ops,
-                                 std::map<std::string, std::pair<int, int>> labels) {
-    for (uint64_t i = 0; i < ops.size(); i++) {
-        Op current_op = ops.at(i);
-
-        if (current_op.type == Op::Type::JMP || current_op.type == Op::Type::CJMPF ||
-            current_op.type == Op::Type::CJMPT || current_op.type == Op::Type::JMPE ||
-            current_op.type == Op::Type::CJMPET || current_op.type == Op::Type::CJMPEF) {
-            if (labels.count(current_op.str_operand)) {
-                if (current_op.type == Op::Type::JMP || current_op.type == Op::Type::CJMPF ||
-                    current_op.type == Op::Type::CJMPT)
-                    current_op.int_operand = labels.at(current_op.str_operand).first;
-                else if (current_op.type == Op::Type::JMPE || current_op.type == Op::Type::CJMPET ||
-                         current_op.type == Op::Type::CJMPEF)
-                    current_op.int_operand = labels.at(current_op.str_operand).second;
-                ops.at(i) = current_op;
-            } else {
-                print_error_at_loc(current_op.loc,
-                                   "label '" + current_op.str_operand + "' not found");
-                exit(1);
-            }
-        }
-    }
-
-    return ops;
-}
-
 void Parser::parse() {
     while (i < tokens.size()) {
         Op current_op = convert_token_to_op(tokens.at(i));

@@ -7,10 +7,9 @@ fun main()
 		
 		dup 6 = cjmpf iflabel
 			69 dump
-			jmpe iflabel
+			jmp endif
 		iflabel:
 			dup dump
-		end
+		endif:
 
 		dup cjmpt loop
-	end

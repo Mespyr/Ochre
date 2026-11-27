@@ -1,7 +1,3 @@
-#include <error.h>
-
-#include <cstdlib>
-
 #include "compiler.h"
 
 void Compiler::gen_op_asm(Op op, int func_addr) {
@@ -275,27 +271,23 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
     } break;
 
     case Op::Type::LABEL:
-    case Op::Type::LABEL_END:
         asmp.new_inst(asmp.inst_label("addr_" + std::to_string(func_addr) + "_" +
                                       std::to_string(op.int_operand)));
         break;
 
     case Op::Type::JMP:
-    case Op::Type::JMPE:
         asmp.new_inst(asmp.inst_jmp("addr_" + std::to_string(func_addr) + "_" +
                                     std::to_string(op.int_operand)));
         break;
 
-    case Op::Type::CJMPT:
-    case Op::Type::CJMPET: {
+    case Op::Type::CJMPT: {
         asmp.new_inst(asmp.inst_pop(Argument(Register::RAX)));
         asmp.new_inst(asmp.inst_test(Argument(Register::RAX), Argument(Register::RAX)));
         asmp.new_inst(asmp.inst_jnz("addr_" + std::to_string(func_addr) + "_" +
                                     std::to_string(op.int_operand)));
     } break;
 
-    case Op::Type::CJMPF:
-    case Op::Type::CJMPEF: {
+    case Op::Type::CJMPF: {
         asmp.new_inst(asmp.inst_pop(Argument(Register::RAX)));
         asmp.new_inst(asmp.inst_test(Argument(Register::RAX), Argument(Register::RAX)));
         asmp.new_inst(asmp.inst_jz("addr_" + std::to_string(func_addr) + "_" +
@@ -364,7 +356,6 @@ void Compiler::gen_op_asm(Op op, int func_addr) {
 
     case Op::Type::CONST:
     case Op::Type::DEFINE_VAR:
-    case Op::Type::END:
     case Op::Type::FUN:
     case Op::Type::IMPORT:
     case Op::Type::READ:
